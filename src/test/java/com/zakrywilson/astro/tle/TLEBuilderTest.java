@@ -228,14 +228,14 @@ public class TLEBuilderTest {
                     .setInternationalDesignator(internationalDesignator)
                     .setEpoch(epochYear, epochDay)
                     .setOrbitalElements(inclination, raan, eccentricity, argumentOfPerigee, meanAnomaly, meanMotion)
-                    .setDragTerm(dragTerm)
+                    .setFirstDerivativeMeanMotion(firstDerivativeMeanMotion)
                     .setElementSetNumber(elementSetNumber)
                     .setRevolutions(revolutions)
                     .setChecksums(checksumLine1, checksumLine2)
                     .setClassification(classification)
                     .setEphemerisType(ephemerisType)
-                    .setFirstDerivativeMeanMotion(firstDerivativeMeanMotion)
                     .setSecondDerivativeMeanMotion(secondDerivativeMeanMotion)
+                    .setDragTerm(dragTerm)
                     .build();
 
             if (!builtTle.getLine1().equals(line1)) {

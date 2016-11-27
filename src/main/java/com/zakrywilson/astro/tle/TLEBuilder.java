@@ -13,7 +13,7 @@ package com.zakrywilson.astro.tle;
  * {@link EpochStep#setEpoch(int, double)} or {@link EpochStep#setEpoch(long)}, and so forth.
  * Once all the required steps have been completed, {@link BuildStep#build()} will be available for
  * the TLE to be built. When the TLE is allowed to be built, the optional elements will also be
- * available to be set, such as <i>classificaiton</i> and <i>ephemeris type</i>. Note that there are
+ * available to be set, such as <i>classification</i> and <i>ephemeris type</i>. Note that there are
  * constraints on the values for the TLE: most setters may throw an {@link IllegalArgumentException}
  * if the values are invalid.
  * <p>
@@ -24,22 +24,22 @@ package com.zakrywilson.astro.tle;
  *   <li>International designator</li>
  *   <li>Epoch</li>
  *   <li>Orbital elements</li>
- *   <li>BSTAR drag term</li>
+ *   <li>First derivative of mean motion</li>
  *   <li>Element set number</li>
  *   <li>Revolutions at epoch</li>
- *   <li>Checksum</li>
+ *   <li>Checksums</li>
  *   <li>
  *     Build step
  *     <ul>
  *       <li>Classification</li>
- *       <li>First derivative of mean motion</li>
  *       <li>Second derivative of mean motion</li>
+ *       <li>BSTAR drag term</li>
  *       <li>Ephemeris type</li>
  *       <li>Build</li>
  *     </ul>
  *   </li>
  * </ol>
- * As you can see, after the <i>checksum</i> step, the TLE can now be built or any number of the
+ * As you can see, after the <i>checksums</i> step, the TLE can now be built or any number of the
  * optional elements can be set before calling {@link BuildStep#build()}.
  * <p>
  * Example usage:
@@ -49,7 +49,7 @@ package com.zakrywilson.astro.tle;
  *                     .setInternationalDesignator("98067  A")
  *                     .setEpoch(8, 264.51782528)
  *                     .setOrbitalElements(51.6416, 247.4627, .0006703, 130.5360, 325.0288, 15.72125391)
- *                     .setDragTerm(.000011606)
+ *                     .setFirstDerivativeMeanMotion(-.00000439)
  *                     .setElementSetNumber(292)
  *                     .setRevolutions(56353)
  *                     .setChecksumLine1(7)
@@ -93,7 +93,7 @@ public class TLEBuilder {
      * The satellite number step that returns the international designator step.
      */
     public interface SatelliteNumberStep {
-        InternationalDesignatorStep setSatelliteNumber(int satelliteNumber);
+        InternationalDesignatorStep setSatelliteNumber(int i);
         InternationalDesignatorStep setSatelliteNumber(String satelliteNumber);
     }
 
@@ -101,7 +101,7 @@ public class TLEBuilder {
      * The international designator step that returns the epoch step.
      */
     public interface InternationalDesignatorStep {
-        EpochStep setInternationalDesignator(String internationalDesignator);
+        EpochStep setInternationalDesignator(String s);
     }
 
     /**
@@ -113,39 +113,42 @@ public class TLEBuilder {
     }
 
     /**
-     * The orbital elements step that returns the BSTAR drag term step.
+     * The orbital elements step that returns the first derivative mean motion step.
      */
     public interface OrbitalElementsStep {
-        DragTermStep setOrbitalElements(double inclination, double raan, double eccentricity,
-                                        double argumentOfPerigee, double meanAnomaly,
-                                        double meanMotion);
+        FirstDerivativeMeanMotionStep setOrbitalElements(double inclination,
+                                                         double raan,
+                                                         double eccentricity,
+                                                         double argumentOfPerigee,
+                                                         double meanAnomaly,
+                                                         double meanMotion);
     }
 
     /**
-     * The BSTAR drag term step that returns the element set number step.
+     * The first derivative of the mean motion that returns the element set step.
      */
-    public interface DragTermStep {
-        ElementSetNumberStep setDragTerm(double drag);
+    public interface FirstDerivativeMeanMotionStep {
+        ElementSetNumberStep setFirstDerivativeMeanMotion(double d);
     }
 
     /**
      * The element set number step that returns the revolutions step.
      */
     public interface ElementSetNumberStep {
-        RevolutionsStep setElementSetNumber(int number);
+        RevolutionsStep setElementSetNumber(int i);
     }
 
     /**
-     * The revolutions step that returns the checksum step.
+     * The revolutions step that returns the checksums step.
      */
     public interface RevolutionsStep {
-        ChecksumStep setRevolutions(int revolutions);
+        ChecksumsStep setRevolutions(int i);
     }
 
     /**
      * The checksum step that returns the build step.
      */
-    public interface ChecksumStep {
+    public interface ChecksumsStep {
         BuildStep setChecksums(int line1, int line2);
     }
 
@@ -153,10 +156,10 @@ public class TLEBuilder {
      * The build step that is the end of the steps and allows for the optional elements to be set.
      */
     public interface BuildStep {
-        BuildStep setClassification(char classification);
-        BuildStep setFirstDerivativeMeanMotion(double mm);
-        BuildStep setSecondDerivativeMeanMotion(double mm);
-        BuildStep setEphemerisType(int type);
+        BuildStep setClassification(char c);
+        BuildStep setSecondDerivativeMeanMotion(double d);
+        BuildStep setDragTerm(double d);
+        BuildStep setEphemerisType(int i);
         TLE build();
     }
 
@@ -164,8 +167,9 @@ public class TLEBuilder {
      * Implements all steps.
      */
     private static class Steps implements SatelliteNumberStep, InternationalDesignatorStep,
-                                          EpochStep, OrbitalElementsStep, DragTermStep,
-                                          ElementSetNumberStep, RevolutionsStep, ChecksumStep,
+                                          EpochStep, OrbitalElementsStep,
+                                          FirstDerivativeMeanMotionStep,
+                                          ElementSetNumberStep, RevolutionsStep, ChecksumsStep,
                                           BuildStep {
         private String title = "";
         private String line1;
@@ -176,9 +180,9 @@ public class TLEBuilder {
         private String internationalDesignator;
         private int    epochYear;
         private double epochDay;
-        private double firstDerivativeOfMeanMotion = 0.0;  // Optional: default is 0.0
+        private double firstDerivativeOfMeanMotion;
         private double secondDerivativeOfMeanMotion = 0.0; // Optional: default is 0.0
-        private double dragTerm;
+        private double dragTerm = 0.0;                     // Optional: default is 0.0
         private int    ephemerisType = 0;                  // Optional: default is 0
         private int    elementSetNumber;
         private int    checksumLine1;
@@ -211,17 +215,17 @@ public class TLEBuilder {
          * Sets the satellite number and returns the international designator step. The satellite
          * number must be between 1 and 99,999.
          *
-         * @param satelliteNumber the satellite number to be set
+         * @param i the satellite number to be set
          * @return the next step
          * @throws IllegalArgumentException if the satellite number is not between 1 and 99,999
          */
         @Override
-        public InternationalDesignatorStep setSatelliteNumber(int satelliteNumber) {
-            if (satelliteNumber < 1 || satelliteNumber > 99999) {
+        public InternationalDesignatorStep setSatelliteNumber(int i) {
+            if (i < 1 || i > 99999) {
                 throw new IllegalArgumentException(
-                        "Satellite number out of range (1-99999): " + satelliteNumber);
+                        "Satellite number out of range (1-99999): " + i);
             }
-            this.satelliteNumber = satelliteNumber;
+            this.satelliteNumber = i;
             return this;
         }
 
@@ -229,49 +233,49 @@ public class TLEBuilder {
          * Sets the satellite number and returns the international designator step. The satellite
          * number must be between 1 and 99,999.
          *
-         * @param satelliteNumber the satellite number to be set
+         * @param s the satellite number to be set
          * @return the next step
          * @throws IllegalArgumentException if the satellite number is not between 1 and 99,999
          */
         @Override
-        public InternationalDesignatorStep setSatelliteNumber(String satelliteNumber) {
-            String s = satelliteNumber.trim();
-            if (!s.matches("\\d{1,5}")) {
+        public InternationalDesignatorStep setSatelliteNumber(String s) {
+            String satelliteString = s.trim();
+            if (!satelliteString.matches("\\d{1,5}")) {
                 throw new IllegalArgumentException(
-                        "Satellite number must be 1-5 digits in length: " + satelliteNumber);
+                        "Satellite number must be 1-5 digits in length: " + satelliteString);
             }
 
-            int number;
+            int satelliteNumber;
             try {
-                number = Integer.parseInt(s);
+                satelliteNumber = Integer.parseInt(satelliteString);
             } catch (RuntimeException e) {
                 throw new IllegalArgumentException(
-                        "Satellite number is not a number: " + satelliteNumber);
+                        "Satellite number is not a number: " + satelliteString);
             }
-            return setSatelliteNumber(number);
+            return setSatelliteNumber(satelliteNumber);
         }
 
         /**
          * Sets the international designator and returns the epoch step. The international
          * designator must be the 2-digit year, joined with the 3-digit day of the year, followed 1
          * to 3 characters, corresponding to the launch piece. For example <tt>98067  A</tt> is an
-         * international designator from Febuary 1998.
+         * international designator from February 1998.
          *
-         * @param internationalDesignator the international designator to be set
+         * @param s the international designator to be set
          * @return the next step
          * @throws IllegalArgumentException if the international designator does not match the
          * expected format
          */
         @Override
-        public EpochStep setInternationalDesignator(String internationalDesignator) {
-        String s = internationalDesignator.trim();
+        public EpochStep setInternationalDesignator(String s) {
+        String id = s.trim();
             String regex = "\\d{5}\\s{0,2}[A-Za-z]+";
-            if (!s.matches(regex)) {
+            if (!id.matches(regex)) {
                 throw new IllegalArgumentException(
                         "International designator does not match regular expression \"" + regex +
-                                "\":" + internationalDesignator);
+                                "\":" + id);
             }
-            this.internationalDesignator = s;
+            this.internationalDesignator = id;
             return this;
         }
 
@@ -312,7 +316,7 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the orbital elements and returns the drag term step.
+         * Sets the orbital elements and returns the first derivative mean motion step.
          *
          * @param inclination the inclination (in degrees) to be set
          * @param raan the right ascension of the ascending node (RAAN) (in degrees) to be set
@@ -323,9 +327,12 @@ public class TLEBuilder {
          * @return the next step
          */
         @Override
-        public DragTermStep setOrbitalElements(double inclination, double raan, double eccentricity,
-                                               double argumentOfPerigee, double meanAnomaly,
-                                               double meanMotion) {
+        public FirstDerivativeMeanMotionStep setOrbitalElements(double inclination,
+                                                                double raan,
+                                                                double eccentricity,
+                                                                double argumentOfPerigee,
+                                                                double meanAnomaly,
+                                                                double meanMotion) {
             this.inclination = inclination;
             this.raan = raan;
             this.eccentricity = eccentricity;
@@ -336,46 +343,47 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the BSTAR drag term and returns the element set number step.
+         * Sets the first derivative of the mean motion, divided by <tt>2</tt> and returns the
+         * element set number step.
          *
-         * @param drag the BSTAR drag term to be set
+         * @param d the first derivative of the mean motion, divided by <tt>2</tt>, to be set
          * @return the next step
          */
         @Override
-        public ElementSetNumberStep setDragTerm(double drag) {
-            this.dragTerm = drag;
+        public ElementSetNumberStep setFirstDerivativeMeanMotion(double d) {
+            this.firstDerivativeOfMeanMotion = d;
             return this;
         }
 
         /**
          * Sets the element set number and returns the revolutions step.
          *
-         * @param number the element set number to be set
+         * @param i the element set number to be set
          * @return the next step
          */
         @Override
-        public RevolutionsStep setElementSetNumber(int number) {
-            if (number < 0 || number > 9999) {
+        public RevolutionsStep setElementSetNumber(int i) {
+            if (i < 0 || i > 9999) {
                 throw new IllegalArgumentException(
-                        "Element set number out of range (0-9999): " + number);
+                        "Element set number out of range (0-9999): " + i);
             }
-            this.elementSetNumber = number;
+            this.elementSetNumber = i;
             return this;
         }
 
         /**
-         * Sets the revolutions number and returns the checksum step.
+         * Sets the revolutions number and returns the checksums step.
          *
-         * @param revolutions the revolutions number at epoch to be set
+         * @param i the revolutions number at epoch to be set
          * @return the next step
          */
         @Override
-        public ChecksumStep setRevolutions(int revolutions) {
-            if (revolutions < 0 || revolutions > 99999) {
+        public ChecksumsStep setRevolutions(int i) {
+            if (i < 0 || i > 99999) {
                 throw new IllegalArgumentException(
-                        "Revolutions number out of range (0-99999): " + revolutions);
+                        "Revolutions number out of range (0-99999): " + i);
             }
-            this.revolutions = revolutions;
+            this.revolutions = i;
             return this;
         }
 
@@ -402,32 +410,19 @@ public class TLEBuilder {
         /**
          * Sets the classification character and return the same step (the build step).
          *
-         * @param classification the classification character to be set (either <tt>U</tt>,
+         * @param c the classification character to be set (either <tt>U</tt>,
          * <tt>S</tt>, or <tt>C</tt>)
          * @return this step (the build step)
          * @throws IllegalArgumentException if the character is not <tt>U</tt>< <tt>S</tt>, or
          * <tt>C</tt>
          */
         @Override
-        public BuildStep setClassification(char classification) {
-            if (classification != 'U' && classification != 'C' && classification != 'S') {
+        public BuildStep setClassification(char c) {
+            if (c != 'U' && c != 'C' && c != 'S') {
                 throw new IllegalArgumentException(
-                        "Classification must be 'U', 'C' or 'S': " + classification);
+                        "Classification must be 'U', 'C' or 'S': " + c);
             }
-            this.classification = classification;
-            return this;
-        }
-
-        /**
-         * Sets the first derivative of the mean motion, divided by <tt>2</tt>, and returns the same
-         * step (the build step).
-         *
-         * @param mm the first deriviative of the mean motion, divided by <tt>2</tt>, to be set
-         * @return this step (the build step)
-         */
-        @Override
-        public BuildStep setFirstDerivativeMeanMotion(double mm) {
-            this.firstDerivativeOfMeanMotion = mm;
+            this.classification = c;
             return this;
         }
 
@@ -435,12 +430,24 @@ public class TLEBuilder {
          * Sets the second derivative of the mean motion, divided by <tt>6</tt>, and returns the
          * same step (the build step).
          *
-         * @param mm the second derivative of the mean motion, divided by <tt>6</tt>, to be set
+         * @param d the second derivative of the mean motion, divided by <tt>6</tt>, to be set
          * @return this step (the build step)
          */
         @Override
-        public BuildStep setSecondDerivativeMeanMotion(double mm) {
-            this.secondDerivativeOfMeanMotion = mm;
+        public BuildStep setSecondDerivativeMeanMotion(double d) {
+            this.secondDerivativeOfMeanMotion = d;
+            return this;
+        }
+
+        /**
+         * Sets the BSTAR drag term and returns the same step (the build step).
+         *
+         * @param d the BSTAR drag term to be set
+         * @return this step (the build step)
+         */
+        @Override
+        public BuildStep setDragTerm(double d) {
+            this.dragTerm = d;
             return this;
         }
 
@@ -448,16 +455,16 @@ public class TLEBuilder {
          * Sets the ephemeris type and returns the same step (the build step). The ephemeris type
          * must be a single-digit value, i.e., 0-9.
          *
-         * @param type the ephemeris type to be set, generally <tt>0</tt>
+         * @param i the ephemeris type to be set, generally <tt>0</tt>
          * @return this step (the build step)
          * @throws IllegalArgumentException if the ephemeris type is not between 0 and 9
          */
         @Override
-        public BuildStep setEphemerisType(int type) {
-            if (type < 0 || type > 9) {
-                throw new IllegalArgumentException("Ephemeris type out of range (0-9): " + type);
+        public BuildStep setEphemerisType(int i) {
+            if (i < 0 || i > 9) {
+                throw new IllegalArgumentException("Ephemeris type out of range (0-9): " + i);
             }
-            this.ephemerisType = type;
+            this.ephemerisType = i;
             return this;
         }
 
