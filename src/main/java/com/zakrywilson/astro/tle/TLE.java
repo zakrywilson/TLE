@@ -498,4 +498,155 @@ public final class TLE {
         this.checksumLine2 = parser.getChecksumLine2();
     }
 
+    /**
+     * Indicates whether some other TLE is "equal to" this one.
+     * <p>
+     * Compares all of the TLEs' separate attributes <b>except</b> for the <tt>Strings</tt>, lines 1
+     * and 2. Instead, the individual elements that make up the lines are compared. This will ensure
+     * that two TLEs with slightly different formatting but the same data to be considered equal.
+     * Some such cases are when values in a TLE may lead with <tt>0</tt>'s instead of whitespaces.
+     * <p>
+     * The list of elements to be compared: title, satellite number, classification type, epoch
+     * year, epoch day, first derivative of mean motion, second derivative of mean motion, drag
+     * term, ephemeris type, element set number, checksum for line 1 and 2, inclination, right
+     * ascension of the ascending node, argument of perigee, mean anomaly, mean motion, and
+     * revolutions at epoch.
+     *
+     * @param obj the reference object with which to compare
+     * @return <tt>true</tt> if this object is the same as <tt>obj</tt>, <tt>false</tt> if otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        TLE tle = (TLE) obj;
+
+        if (satelliteNumber != tle.satelliteNumber) {
+            return false;
+        }
+        if (classification != tle.classification) {
+            return false;
+        }
+        if (epochYear != tle.epochYear) {
+            return false;
+        }
+        if (Double.compare(tle.epochDay, epochDay) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.firstDerivativeOfMeanMotion, firstDerivativeOfMeanMotion) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.secondDerivativeOfMeanMotion, secondDerivativeOfMeanMotion) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.dragTerm, dragTerm) != 0) {
+            return false;
+        }
+        if (ephemerisType != tle.ephemerisType) {
+            return false;
+        }
+        if (elementSetNumber != tle.elementSetNumber) {
+            return false;
+        }
+        if (checksumLine1 != tle.checksumLine1) {
+            return false;
+        }
+        if (Double.compare(tle.inclination, inclination) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.raan, raan) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.eccentricity, eccentricity) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.argumentOfPerigee, argumentOfPerigee) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.meanAnomaly, meanAnomaly) != 0) {
+            return false;
+        }
+        if (Double.compare(tle.meanMotion, meanMotion) != 0) {
+            return false;
+        }
+        if (revolutions != tle.revolutions) {
+            return false;
+        }
+        if (checksumLine2 != tle.checksumLine2) {
+            return false;
+        }
+        if (title != null ? !title.equals(tle.title) : tle.title != null) {
+            return false;
+        }
+        return internationalDesignator != null ? internationalDesignator
+                .equals(tle.internationalDesignator) : tle.internationalDesignator == null;
+    }
+
+    /**
+     * Returns a hash code value for the object.
+     *
+     * @return a hash code value for this object
+     */
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = title != null ? title.hashCode() : 0;
+        result = 31 * result + satelliteNumber;
+        result = 31 * result + (int) classification;
+        result = 31 * result + (internationalDesignator != null ? internationalDesignator.hashCode() : 0);
+        result = 31 * result + epochYear;
+        temp = Double.doubleToLongBits(epochDay);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(firstDerivativeOfMeanMotion);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(secondDerivativeOfMeanMotion);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(dragTerm);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + ephemerisType;
+        result = 31 * result + elementSetNumber;
+        result = 31 * result + checksumLine1;
+        temp = Double.doubleToLongBits(inclination);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(raan);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(eccentricity);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(argumentOfPerigee);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(meanAnomaly);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(meanMotion);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + revolutions;
+        result = 31 * result + checksumLine2;
+        return result;
+    }
+
+    /**
+     * Returns the formatted TLE. If the title is blank, its line will be omitted.
+     * <p>
+     * An example of a formatted TLE:
+     * <pre>
+     * ISS (ZARYA)
+     * 1 25544U 98067A   08264.51782528 -.00002182  00000-0 -11606-4 0  2927
+     * 2 25544  51.6416 247.4627 0006703 130.5360 325.0288 15.72125391563537
+     * </pre>
+     *
+     * @return the formatted TLE
+     */
+    @Override
+    public String toString() {
+        if (title != null && title.trim().length() > 0) {
+            return String.format("%-24s%n%s%n%s", title, line1, line2);
+        }
+        return String.format("%s%n%s", line1, line2);
+    }
+
 }
