@@ -149,4 +149,4 @@ URL: zakrywilson.com
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE.txt](https://github.com/zakrywilson/TLE/blob/master/LICENSE.txt) file for details.
+This project is licensed under the MIT License. See the [LICENSE.md](https://github.com/zakrywilson/TLE/blob/master/LICENSE.md) file for details.
