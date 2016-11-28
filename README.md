@@ -13,32 +13,28 @@ A package for parsing, formatting, and building TLEs [(Two Line Element Sets)](h
 
 #### Linux / macOS
 
-1. Run the following commands:
-
+- Run the following commands:
 ```bash
 git clone https://github.com/zakrywilson/TLE.git  
 cd TLE  
 mvn package  
 cd target  
 ```
-
-2. Copy the JARs to your project
-3. Add JARs to your project's classpath.
+- Copy the JARs to your project.
+- Add JARs to your project's classpath.
 
 #### Windows
 
-1. Download repository [here](https://github.com/zakrywilson/TLE/archive/master.zip).  
-2. Unzip the file.  
-3. Navigate to the unzipped file.  
-4. Run the following commands inside the root folder:  
-
-```dos  
+- Download repository [here](https://github.com/zakrywilson/TLE/archive/master.zip).  
+- Unzip the file.  
+- Navigate to the unzipped file.  
+- Run the following commands inside the root folder:
+```dos
 mvn package  
 cd target  
 ```
-
-5. Copy the JARs to your project.  
-6. Add JARs to your project's classpath.  
+- Copy the JARs to your project.
+- Add JARs to your project's classpath.
 
 ## How to Use
 
