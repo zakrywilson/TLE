@@ -66,20 +66,20 @@ This builder enforces the correct construction of a TLE. The [TLEBuilder](https:
 
 The list of steps in order (after calling `TLEBuilder#newBuilder()` or `TLEBuilder#newBuilder(String)`):
 
-1. Satellite number
-2. International designator
-3. Epoch
-4. Orbital elements
-5. First derivative of mean motion  
-6. Element set number
-7. Revolutions at epoch
-8. Checksums
-9. Build step  
-    a. Classification (optional, default = 'U')  
-    b. Second derivative of mean motion (optional, default = 0.0)  
-    c. BSTAR drag term (optional, default = 0.0)  
-    d. Ephemeris type (optional, default = 0)  
-    e. Build TLE  
+1. **Satellite number step**
+2. **International designator step**
+3. **Epoch step**
+4. **Orbital elements step**
+5. **First derivative of mean motion step**
+6. **Element set number step**
+7. **Revolutions at epoch step**
+8. **Checksums step**
+9. **Build step**
+    a. **Classification** (*optional, default = 'U'*)  
+    b. **Second derivative of mean motion** (*optional, default = 0.0*)  
+    c. **BSTAR drag term** (*optional, default = 0.0*)  
+    d. **Ephemeris type** (*optional, default = 0*)  
+    e. **Build TLE**
 
 As you can see, after the *checksums* step, the TLE can now be built or any number of the optional elements can be set before calling `BuildStep#build()`.
 
