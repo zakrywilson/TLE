@@ -79,11 +79,11 @@ The list of steps in order (after calling `TLEBuilder#newBuilder()` or `TLEBuild
 7. Revolutions at epoch
 8. Checksums
 9. Build step  
-    a. Classification  
-	b. Second derivative of mean motion  
-	c. BSTAR drag term
-	d. Ephemeris type  
-	e. Build TLE
+    a. Classification (optional, default = 'U')  
+    b. Second derivative of mean motion (optional, default = 0.0)  
+    c. BSTAR drag term (optional, default = 0.0)  
+    d. Ephemeris type (optional, default = 0)  
+    e. Build TLE  
 
 As you can see, after the *checksums* step, the TLE can now be built or any number of the optional elements can be set before calling `BuildStep#build()`.
 
