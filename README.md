@@ -74,7 +74,7 @@ The list of steps in order (after calling `TLEBuilder#newBuilder()` or `TLEBuild
 6. **Element set number step**
 7. **Revolutions at epoch step**
 8. **Checksums step**
-9. **Build step**
+9. **Build step**  
     a. **Classification** (*optional, default = 'U'*)  
     b. **Second derivative of mean motion** (*optional, default = 0.0*)  
     c. **BSTAR drag term** (*optional, default = 0.0*)  
