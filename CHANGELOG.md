@@ -1,6 +1,5 @@
 # Change Log
 
----
 
 ## Version 1.1.1 - 12/03/2016
 
@@ -8,6 +7,7 @@ Improved efficiency of EpochUtils class
 
 - No longer using *synchronized* methods but instead using a single atomic reference to the shared resource  
 - Cutting down on java.util.Calendar instances  
+
 
 ## Version 1.1 - 12/02/2016
 
