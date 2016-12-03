@@ -236,14 +236,16 @@ public class TLEParserTest {
             // Check line number 1
             if (lineNumber1 != 1) {
                 Assert.fail(String.format(
-                        "Line number 1 does not match expected value: expected=1, received='%d' for '%s'",
+                        "Line number 1 does not match expected value:" +
+                                "expected=1, received='%d' for '%s'",
                         lineNumber1, line1));
             }
 
             // Check line number 2
             if (lineNumber2 != 2) {
                 Assert.fail(String.format(
-                        "Line number 2 does not match expected value: expected=2, received='%d' for '%s'",
+                        "Line number 2 does not match expected value:" +
+                                "expected=2, received='%d' for '%s'",
                         lineNumber2, line2));
             }
         }
@@ -270,7 +272,8 @@ public class TLEParserTest {
             // Check satellite number
             if (satNumber != satNumberExpected) {
                 Assert.fail(String.format(
-                        "Satellite number does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Satellite number does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         satNumberExpected, satNumber, line1));
             }
         }
@@ -297,7 +300,8 @@ public class TLEParserTest {
             // Check classification
             if (classification != classificationExpected) {
                 Assert.fail(String.format(
-                        "Classification character does not match expected string: expected='%s', received='%s' for '%s'",
+                        "Classification character does not match expected string:" +
+                                "expected='%s', received='%s' for '%s'",
                         classificationExpected, classification, line1));
             }
         }
@@ -324,7 +328,8 @@ public class TLEParserTest {
             // Check international designator
             if (!designator.equals(designatorExpected)) {
                 Assert.fail(String.format(
-                        "International designator does not match expected string: expected='%s', received='%s' for '%s'",
+                        "International designator does not match expected string:" +
+                                "expected='%s', received='%s' for '%s'",
                         designatorExpected, designator, line1));
             }
         }
@@ -351,7 +356,8 @@ public class TLEParserTest {
             // Check epoch year
             if (year != yearExpected) {
                 Assert.fail(String.format(
-                        "Epoch year does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Epoch year does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         yearExpected, year, line1));
             }
         }
@@ -379,7 +385,8 @@ public class TLEParserTest {
             // Check epoch day
             if (Double.compare(day, dayExpected) != 0) {
                 Assert.fail(String.format(
-                        "Epoch day does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Epoch day does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         dayExpected, day, line1));
             }
         }
@@ -407,7 +414,8 @@ public class TLEParserTest {
             // Check first derivative of the mean motion
             if (Double.compare(meanMotion, meanMotionExpected) != 0) {
                 Assert.fail(String.format(
-                        "First derivative of the mean motion does not match expected value: expected='%s', received='%s' for '%s'",
+                        "First derivative of the mean motion does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         meanMotionExpected, meanMotion, line1));
             }
         }
@@ -435,7 +443,8 @@ public class TLEParserTest {
             // Check second derivative of the mean motion
             if (Double.compare(meanMotion, meanMotionExpected) != 0) {
                 Assert.fail(String.format(
-                        "Second derivative of the mean motion does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Second derivative of the mean motion does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         meanMotionExpected, meanMotion, line1));
             }
         }
@@ -462,7 +471,8 @@ public class TLEParserTest {
             // Check drag term
             if (Double.compare(dragTerm, dragTermExpected) != 0) {
                 Assert.fail(String.format(
-                        "BSTAR drag term does not match expected value: expected='%s', received='%s' for '%s'",
+                        "BSTAR drag term does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         dragTermExpected, dragTerm, line1));
             }
         }
@@ -489,7 +499,8 @@ public class TLEParserTest {
             // Check ephemeris type
             if (ephemerisType != ephemerisTypeExpected) {
                 Assert.fail(String.format(
-                        "Ephemeris type does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Ephemeris type does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         ephemerisTypeExpected, ephemerisType, line1));
             }
         }
@@ -516,7 +527,8 @@ public class TLEParserTest {
             // Check element set number
             if (elementSetNumber != elementSetNumberExpected) {
                 Assert.fail(String.format(
-                        "Element set number does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Element set number does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         elementSetNumberExpected, elementSetNumber, line1));
             }
         }
@@ -543,7 +555,8 @@ public class TLEParserTest {
             // Check checksum
             if (checksum != checksumExpected) {
                 Assert.fail(String.format(
-                        "Checksum does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Checksum does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         checksumExpected, checksum, line1));
             }
         }
@@ -570,7 +583,8 @@ public class TLEParserTest {
             // Check checksum
             if (checksum != checksumExpected) {
                 Assert.fail(String.format(
-                        "Checksum does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Checksum does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         checksumExpected, checksum, line2));
             }
         }
@@ -596,7 +610,8 @@ public class TLEParserTest {
             // Check inclination
             if (Double.compare(inclination, inclinationExpected) != 0) {
                 Assert.fail(String.format(
-                        "Inclination does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Inclination does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         inclinationExpected, inclination, line2));
             }
         }
@@ -650,7 +665,8 @@ public class TLEParserTest {
             // Check eccentricity
             if (Double.compare(eccentricity, eccentricityExpected) != 0) {
                 Assert.fail(String.format(
-                        "Eccentricity does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Eccentricity does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         eccentricityExpected, eccentricity, line2));
             }
         }
@@ -677,7 +693,8 @@ public class TLEParserTest {
             // Check argument of perigee
             if (Double.compare(argumentOfPerigee, argumentOfPerigeeExpected) != 0) {
                 Assert.fail(String.format(
-                        "Argument of perigee does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Argument of perigee does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         argumentOfPerigeeExpected, argumentOfPerigee, line2));
             }
         }
@@ -704,7 +721,8 @@ public class TLEParserTest {
             // Check mean anomaly
             if (Double.compare(meanAnomaly, meanAnomalyExpected) != 0) {
                 Assert.fail(String.format(
-                        "Mean anomaly does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Mean anomaly does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         meanAnomalyExpected, meanAnomaly, line2));
             }
         }
@@ -731,7 +749,8 @@ public class TLEParserTest {
             // Check mean motion
             if (Double.compare(meanMotion, meanMotionExpected) != 0) {
                 Assert.fail(String.format(
-                        "Mean motion does not match expected value: expected='%s', received='%s' for '%s'",
+                        "Mean motion does not match expected value:" +
+                                "expected='%s', received='%s' for '%s'",
                         meanMotionExpected, meanMotion, line2));
             }
         }
@@ -758,7 +777,8 @@ public class TLEParserTest {
             // Check revolutions
             if (revolutions != revolutionsExpected) {
                 Assert.fail(String.format(
-                        "Revolutions number does not match expected value: expected='%d', received='%d' for '%s'",
+                        "Revolutions number does not match expected value:" +
+                                "expected='%d', received='%d' for '%s'",
                         revolutionsExpected, revolutions, line1));
             }
         }
