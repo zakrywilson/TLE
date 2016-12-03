@@ -224,10 +224,14 @@ public class TLEBuilder {
          *
          * @param s the satellite number to be set
          * @return the next step
-         * @throws IllegalArgumentException if the satellite number is not between 1 and 99,999
+         * @throws IllegalArgumentException if the satellite number is <code>null</code> or is not
+         * between 1 and 99,999
          */
         @Override
         public InternationalDesignatorStep setSatelliteNumber(String s) {
+            if (s == null) {
+                throw new IllegalArgumentException("Satellite number cannot be null");
+            }
             String satelliteString = s.trim();
             if (!satelliteString.matches("\\d{1,5}")) {
                 throw new IllegalArgumentException(
@@ -252,12 +256,15 @@ public class TLEBuilder {
          *
          * @param s the international designator to be set
          * @return the next step
-         * @throws IllegalArgumentException if the international designator does not match the
-         * expected format
+         * @throws IllegalArgumentException if the international designator is <code>null</code> or
+         * does not match the expected format
          */
         @Override
         public EpochStep setInternationalDesignator(String s) {
-        String id = s.trim();
+            if (s == null) {
+                throw new IllegalArgumentException("International designator cannot be null");
+            }
+            String id = s.trim();
             String regex = "\\d{5}\\s{0,2}[A-Za-z]+";
             if (!id.matches(regex)) {
                 throw new IllegalArgumentException(
@@ -274,16 +281,19 @@ public class TLEBuilder {
          * that this Julian day is the Julian day minus the epoch year, i.e., the epoch fractional
          * Julian day must not exceed 366.0.
          *
-         * @param year the epoch year to be set
-         * @param day the epoch day to be set
+         * @param year the epoch 4-digit year to be set
+         * @param day the epoch fractional Julian day of year to be set
          * @return the next step
-         * @throws IllegalArgumentException if the epoch day is not between 0.0 and 366.0
+         * @throws IllegalArgumentException if the epoch day is not between 0.0 and 366.0, or if the
+         * epoch year is not between 100 and 9,999
          */
         @Override
         public OrbitalElementsStep setEpoch(int year, double day) {
+            if (year < 100 || year > 9999) {
+                throw new IllegalArgumentException("Epoch year out of range (0-9999): " + year);
+            }
             if (day < 0.0 || day > 366.0) {
-                throw new IllegalArgumentException(
-                        "Epoch Julian day out of range (0.0-366.0): " + day);
+                throw new IllegalArgumentException("Epoch Julian day out of range (0.0-366.0): " + day);
             }
             this.epochYear = year;
             this.epochDay = day;
@@ -353,8 +363,7 @@ public class TLEBuilder {
         @Override
         public RevolutionsStep setElementSetNumber(int i) {
             if (i < 0 || i > 9999) {
-                throw new IllegalArgumentException(
-                        "Element set number out of range (0-9999): " + i);
+                throw new IllegalArgumentException("Element set number out of range (0-9999): " + i);
             }
             this.elementSetNumber = i;
             return this;
@@ -369,8 +378,7 @@ public class TLEBuilder {
         @Override
         public BuildStep setRevolutions(int i) {
             if (i < 0 || i > 99999) {
-                throw new IllegalArgumentException(
-                        "Revolutions number out of range (0-99999): " + i);
+                throw new IllegalArgumentException("Revolutions number out of range (0-99999): " + i);
             }
             this.revolutions = i;
             return this;
@@ -388,8 +396,7 @@ public class TLEBuilder {
         @Override
         public BuildStep setClassification(char c) {
             if (c != 'U' && c != 'C' && c != 'S') {
-                throw new IllegalArgumentException(
-                        "Classification must be 'U', 'C' or 'S': " + c);
+                throw new IllegalArgumentException("Classification must be 'U', 'C' or 'S': " + c);
             }
             this.classification = c;
             return this;
@@ -468,7 +475,7 @@ public class TLEBuilder {
             tle.setDragTerm(dragTerm);
             tle.setEphemerisType(ephemerisType);
             tle.setElementSetNumber(elementSetNumber);
-            tle.setChecksumLine1(Integer.parseInt(line1.substring(68)));
+            tle.setChecksumLine1(ChecksumUtils.parseChecksum(line1));
             tle.setInclination(inclination);
             tle.setRaan(raan);
             tle.setEccentricity(eccentricity);
@@ -476,7 +483,7 @@ public class TLEBuilder {
             tle.setMeanAnomaly(meanAnomaly);
             tle.setMeanMotion(meanMotion);
             tle.setRevolutions(revolutions);
-            tle.setChecksumLine2(Integer.parseInt(line1.substring(68)));
+            tle.setChecksumLine2(ChecksumUtils.parseChecksum(line2));
             return tle;
         }
 
