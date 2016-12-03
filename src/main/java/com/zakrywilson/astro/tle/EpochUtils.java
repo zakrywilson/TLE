@@ -86,15 +86,14 @@ final class EpochUtils {
         int dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
         int twoDigitYear = year % 100;
 
-        // Get a calendar that contains milliseconds accounted for by the year and day of year
-        Calendar castCalendar = Calendar.getInstance();
-        castCalendar.clear();
-        castCalendar.setTimeZone(UTC_TIME_ZONE);
-        castCalendar.set(Calendar.YEAR, year);
-        castCalendar.set(Calendar.DAY_OF_YEAR, dayOfYear);
+        // Reset the calendar to contain only milliseconds accounted for by year and day of year
+        calendar.clear();
+        calendar.setTimeZone(UTC_TIME_ZONE);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.DAY_OF_YEAR, dayOfYear);
 
         // Get the fractional part of the day by subtracting out the year and day of year
-        long remainingMilliseconds = epochMillisecond - castCalendar.getTimeInMillis();
+        long remainingMilliseconds = epochMillisecond - calendar.getTimeInMillis();
         double fractionalDay = remainingMilliseconds / MILLIS_IN_A_DAY;
 
         // Format year and day for TLE epoch field
