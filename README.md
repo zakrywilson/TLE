@@ -1,6 +1,5 @@
 # TLE
 
----
 
 A package for parsing, formatting, and building TLEs [(Two Line Element Sets)](https://en.wikipedia.org/wiki/Two-line_element_set).
 
@@ -81,13 +80,13 @@ Note: there is also no checksum step: checksums are calculated when the TLE line
 
 The list of steps in order (after calling `TLEBuilder#newBuilder()` or `TLEBuilder#newBuilder(String)`):
 
-1. **Satellite number step**
-2. **International designator step**
-3. **Epoch step**
-4. **Orbital elements step**
-5. **First derivative of mean motion step**
-6. **Element set number step**
-7. **Revolutions at epoch step**
+1. **Satellite number step**  
+2. **International designator step**  
+3. **Epoch step**  
+4. **Orbital elements step**  
+5. **First derivative of mean motion step**  
+6. **Element set number step**  
+7. **Revolutions at epoch step**  
 9. **Build step**  
     a. **Classification** (*optional, default = 'U'*)  
     b. **Second derivative of mean motion** (*optional, default = 0.0*)  
@@ -111,7 +110,7 @@ TLE tle = TLEBuilder.newBuilder("ASTROSAT")
                     .setSatelliteNumber(40930)
                     .setInternationalDesignator("15052A")
                     .setEpoch(1480645924864L)
-                    .setOrbitalElements(5.9955, 199.5858, .0008223, 335.4454, 24.5477, 14.76067908)
+                    .setOrbitalElements(5.9955, 199.5858, 0.0008223, 335.4454, 24.5477, 14.76067908)
                     .setFirstDerivativeMeanMotion(.00000876)
                     .setElementSetNumber(999)
                     .setRevolutions(6378)
@@ -149,14 +148,15 @@ System.out.println(tle.isLine2Valid());
 // true
 ```
 
-## Running the Tests
+## Testing
 
-Code coverage:
+The main goal of these tests were to ensure the code's ability to (1) format individual TLE elements into their respective lines (2) parse existing TLEs to extract their individual elements (3) build "correct" TLEs from descrete elements, using the builder class. Other testing was to ensure the accuracy of converting to and from a *millisecond epoch* to a *two-digit year + fractional Julian day epoch* pair.
+
+### Code coverage
+
 - Classes: 100%
 - Methods: 91%
 - Lines: 78%
-
-The main goal of these tests were to ensure the code's ability to (1) format individual TLE elements into their respective lines (2) parse existing TLEs to extract their individual elements (3) build "correct" TLEs from descrete elements, using the builder class. Other testing was to ensure the accuracy of converting to and from a *millisecond epoch* to a *two-digit year + fractional Julian day epoch* pair.
 
 ### Using an IDE
 
