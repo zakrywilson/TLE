@@ -8,7 +8,10 @@ Improved efficiency of EpochUtils class
 - No longer using *synchronized* methods but instead using a single atomic reference to the shared resource  
 - Cutting down on java.util.Calendar instances  
 
-Making TLEBuilder class more robust by more thoroughly checking input parameters
+Enhanced TLEBuilder
+
+- Changing around steps for more intuitive TLE construction (e.g., mean motion has been taken out of orbital elements step)  
+- Making TLEBuilder class more robust by adding more input parameter range checks (and throwing IllegalArgumentExceptions in such cases)  
 
 
 ## Version 1.1 - 12/02/2016

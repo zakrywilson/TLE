@@ -25,16 +25,17 @@ package com.zakrywilson.astro.tle;
  *   <li>Satellite number</li>
  *   <li>International designator</li>
  *   <li>Epoch</li>
- *   <li>Orbital elements</li>
- *   <li>First derivative of mean motion</li>
  *   <li>Element set number</li>
+ *   <li>Orbital elements</li>
  *   <li>Revolutions at epoch</li>
+ *   <li>Mean motion (revolutions per day)</li>
+ *   <li>First time derivative of mean motion</li>
  *   <li>
  *     Build step
  *     <ul>
- *       <li>Classification</li>
- *       <li>Second derivative of mean motion</li>
+ *       <li>Second time derivative of mean motion</li>
  *       <li>BSTAR drag term</li>
+ *       <li>Classification</li>
  *       <li>Ephemeris type</li>
  *       <li>Build</li>
  *     </ul>
@@ -47,12 +48,13 @@ package com.zakrywilson.astro.tle;
  * <pre>
  * TLE tle = TLEBuilder.newBuilder()
  *                     .setSatelliteNumber(25544)
- *                     .setInternationalDesignator("98067  A")
+ *                     .setInternationalDesignator("98067A")
  *                     .setEpoch(8, 264.51782528)
- *                     .setOrbitalElements(51.6416, 247.4627, .0006703, 130.5360, 325.0288, 15.72125391)
- *                     .setFirstDerivativeMeanMotion(-.00000439)
  *                     .setElementSetNumber(292)
+ *                     .setOrbitalElements(51.6416, 247.4627, .0006703, 130.5360, 325.0288)
  *                     .setRevolutions(56353)
+ *                     .setMeanMotion(15.72125391)
+ *                     .setFirstDerivativeMeanMotion(-.00000439)
  *                     .setClassification('U')
  *                     .setEphemerisType(8)
  *                     .build();
@@ -105,53 +107,57 @@ public class TLEBuilder {
     }
 
     /**
-     * The epoch step that returns the orbital elements step.
+     * The epoch step that returns the element set number step.
      */
     public interface EpochStep {
-        OrbitalElementsStep setEpoch(int year, double day);
-        OrbitalElementsStep setEpoch(long epochMillisecond);
+        ElementSetNumberStep setEpoch(int year, double day);
+        ElementSetNumberStep setEpoch(long epochMillisecond);
     }
 
     /**
-     * The orbital elements step that returns the first derivative mean motion step.
-     */
-    public interface OrbitalElementsStep {
-        FirstDerivativeMeanMotionStep setOrbitalElements(double inclination,
-                                                         double raan,
-                                                         double eccentricity,
-                                                         double argumentOfPerigee,
-                                                         double meanAnomaly,
-                                                         double meanMotion);
-    }
-
-    /**
-     * The first derivative of the mean motion that returns the element set step.
-     */
-    public interface FirstDerivativeMeanMotionStep {
-        ElementSetNumberStep setFirstDerivativeMeanMotion(double d);
-    }
-
-    /**
-     * The element set number step that returns the revolutions step.
+     * The element set number step that returns the orbital elements step.
      */
     public interface ElementSetNumberStep {
-        RevolutionsStep setElementSetNumber(int i);
+        OrbitalElementsStep setElementSetNumber(int i);
     }
 
     /**
-     * The revolutions step that returns the build step.
+     * The orbital elements step that returns the revolutions step.
+     */
+    public interface OrbitalElementsStep {
+        RevolutionsStep setOrbitalElements(double inclination, double raan, double eccentricity,
+                                           double argumentOfPerigee, double meanAnomaly);
+    }
+
+    /**
+     * The revolutions step that returns the mean motion step.
      */
     public interface RevolutionsStep {
-        BuildStep setRevolutions(int i);
+        MeanMotionStep setRevolutions(int i);
+    }
+
+    /**
+     * The mean motion step that returns the first time derivative of mean motion step.
+     */
+    public interface MeanMotionStep {
+        FirstDerivativeMeanMotionStep setMeanMotion(double d);
+    }
+
+    /**
+     * The first time derivative of the mean motion, divided by <code>2</code>, that returns the
+     * build step.
+     */
+    public interface FirstDerivativeMeanMotionStep {
+        BuildStep setFirstDerivativeMeanMotion(double d);
     }
 
     /**
      * The build step that is the end of the steps and allows for the optional elements to be set.
      */
     public interface BuildStep {
-        BuildStep setClassification(char c);
         BuildStep setSecondDerivativeMeanMotion(double d);
         BuildStep setDragTerm(double d);
+        BuildStep setClassification(char c);
         BuildStep setEphemerisType(int i);
         TLE build();
     }
@@ -160,9 +166,9 @@ public class TLEBuilder {
      * Implements all steps.
      */
     private static class Steps implements SatelliteNumberStep, InternationalDesignatorStep,
-                                          EpochStep, OrbitalElementsStep,
-                                          FirstDerivativeMeanMotionStep, ElementSetNumberStep,
-                                          RevolutionsStep, BuildStep {
+                                          EpochStep, ElementSetNumberStep, MeanMotionStep,
+                                          RevolutionsStep, OrbitalElementsStep,
+                                          FirstDerivativeMeanMotionStep, BuildStep {
         private String title = "";
         private String line1;
         private String line2;
@@ -202,98 +208,102 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the satellite number and returns the international designator step. The satellite
-         * number must be between 1 and 99,999.
+         * Sets the satellite number and returns the international designator step.
+         * <p>
+         * The satellite number must be between 1 and 99,999.
          *
          * @param i the satellite number to be set
          * @return the next step
-         * @throws IllegalArgumentException if the satellite number is not between 1 and 99,999
+         * @throws IllegalArgumentException if <code>s</code> is out of range (1 to 99,999)
          */
         @Override
         public InternationalDesignatorStep setSatelliteNumber(int i) {
             if (i < 1 || i > 99999) {
-                throw new IllegalArgumentException("Satellite number out of range (1-99999): " + i);
+                throw new IllegalArgumentException("Satellite number out of range (1 to 99999): " + i);
             }
             this.satelliteNumber = i;
             return this;
         }
 
         /**
-         * Sets the satellite number and returns the international designator step. The satellite
-         * number must be between 1 and 99,999.
+         * Sets the satellite number and returns the international designator step.
+         * <p>
+         * The satellite number must be between 1 and 99,999.
          *
          * @param s the satellite number to be set
          * @return the next step
-         * @throws IllegalArgumentException if the satellite number is <code>null</code> or is not
-         * between 1 and 99,999
+         * @throws IllegalArgumentException if <code>s</code> number is <code>null</code> or is out
+         * of range (1 to 99,999)
          */
         @Override
         public InternationalDesignatorStep setSatelliteNumber(String s) {
             if (s == null) {
                 throw new IllegalArgumentException("Satellite number cannot be null");
             }
-            String satelliteString = s.trim();
-            if (!satelliteString.matches("\\d{1,5}")) {
-                throw new IllegalArgumentException(
-                        "Satellite number must be 1-5 digits in length: " + satelliteString);
+            s = s.trim();
+            if (!s.matches("\\d{1,5}")) {
+                throw new IllegalArgumentException("Satellite number must be 1-5 digits in length: " + s);
             }
 
             int satelliteNumber;
             try {
-                satelliteNumber = Integer.parseInt(satelliteString);
+                satelliteNumber = Integer.parseInt(s);
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException(
-                        "Satellite number is not a number: " + satelliteString);
+                throw new IllegalArgumentException("Satellite number is not a number: " + s);
             }
             return setSatelliteNumber(satelliteNumber);
         }
 
         /**
-         * Sets the international designator and returns the epoch step. The international
-         * designator must be the 2-digit year, joined with the 3-digit day of the year, followed 1
-         * to 3 characters, corresponding to the launch piece. For example <code>98067  A</code> is
-         * an international designator from February 1998.
+         * Sets the international designator and returns the epoch step.
+         * <p>
+         * The international designator must be the 2-digit year, joined with the 3-digit day of the
+         * year, followed 1 to 3 characters, corresponding to the launch piece. For example
+         * <code>98067A</code> is an international designator from February 1998.
          *
          * @param s the international designator to be set
          * @return the next step
-         * @throws IllegalArgumentException if the international designator is <code>null</code> or
-         * does not match the expected format
+         * @throws IllegalArgumentException if <code>s</code> is <code>null</code> or does not match
+         * the expected format
          */
         @Override
         public EpochStep setInternationalDesignator(String s) {
             if (s == null) {
                 throw new IllegalArgumentException("International designator cannot be null");
             }
-            String id = s.trim();
-            String regex = "\\d{5}\\s{0,2}[A-Za-z]+";
-            if (!id.matches(regex)) {
-                throw new IllegalArgumentException(
-                        "International designator does not match regular expression \"" + regex +
-                                "\":" + id);
+            s = s.trim();
+            String regex = "\\d{5}(([ ]{2}[A-Z])|([ ][A-Z]{2})|([A-Z]{1,3}))";
+            if (!s.matches(regex)) {
+                throw new IllegalArgumentException(String.format(
+                        "International designator does not match regular expression \"%s\": %s",
+                        regex, s));
             }
-            this.internationalDesignator = id;
+            this.internationalDesignator = s;
             return this;
         }
 
         /**
-         * Sets the epoch year and fractional Julian day and returns the orbital elements step. The
-         * epoch year must be in the format such as <code>2012</code>, not <code>12</code>. Note
-         * that this Julian day is the Julian day minus the epoch year, i.e., the epoch fractional
-         * Julian day must not exceed 366.0.
+         * Sets the UTC epoch year and fractional Julian day and returns the element set number step.
+         * <p>
+         * The epoch year must be the 4-digit year instead of the 2-digit year (e.g.,
+         * <code>2012</code>, not <code>12</code>). This is done to prevent ambiguity.
+         * <p>
+         * The fractional Julian day is the Julian day minus the epoch year (i.e., the epoch
+         * fractional Julian day must not exceed 366).
          *
          * @param year the epoch 4-digit year to be set
          * @param day the epoch fractional Julian day of year to be set
          * @return the next step
-         * @throws IllegalArgumentException if the epoch day is not between 0.0 and 366.0, or if the
-         * epoch year is not between 100 and 9,999
+         * @throws IllegalArgumentException if <code>year</code> is out of range (100 to 9,999) or
+         * <code>day</code> is out of range (0 to 366)
          */
         @Override
-        public OrbitalElementsStep setEpoch(int year, double day) {
+        public ElementSetNumberStep setEpoch(int year, double day) {
             if (year < 100 || year > 9999) {
-                throw new IllegalArgumentException("Epoch year out of range (0-9999): " + year);
+                throw new IllegalArgumentException("Epoch year out of range (0 to 9,999): " + year);
             }
-            if (day < 0.0 || day > 366.0) {
-                throw new IllegalArgumentException("Epoch Julian day out of range (0.0-366.0): " + day);
+            if (Double.compare(day, 0.0) < 0 || Double.compare(day, 366.0) > 0) {
+                throw new IllegalArgumentException("Epoch Julian day out of range (0 to 366): " + day);
             }
             this.epochYear = year;
             this.epochDay = day;
@@ -301,110 +311,126 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the epoch year and fractional Julian day with the epoch millisecond and returns the
-         * orbital elements step.
+         * Sets the epoch year and fractional Julian day with the epoch millisecond (from January 1,
+         * 1970 00:00:00 UTC) and returns the element set number step.
          *
          * @param epochMillisecond the epoch millisecond to be set
          * @return the next step
          */
         @Override
-        public OrbitalElementsStep setEpoch(long epochMillisecond) {
+        public ElementSetNumberStep setEpoch(long epochMillisecond) {
             this.epochYear = EpochUtils.getEpochYear(epochMillisecond);
             this.epochDay = EpochUtils.getEpochJulianDay(epochMillisecond);
             return this;
         }
 
         /**
-         * Sets the orbital elements and returns the first derivative mean motion step.
-         *
-         * @param inclination the inclination (in degrees) to be set
-         * @param raan the right ascension of the ascending node (RAAN) (in degrees) to be set
-         * @param eccentricity the eccentricity (in degrees) to be set
-         * @param argumentOfPerigee the argument of perigee (in degrees) to be set
-         * @param meanAnomaly the mean anomaly (in degrees) to be set
-         * @param meanMotion the mean motion (revolutions per day) to be set
-         * @return the next step
-         */
-        @Override
-        public FirstDerivativeMeanMotionStep setOrbitalElements(double inclination,
-                                                                double raan,
-                                                                double eccentricity,
-                                                                double argumentOfPerigee,
-                                                                double meanAnomaly,
-                                                                double meanMotion) {
-            this.inclination = inclination;
-            this.raan = raan;
-            this.eccentricity = eccentricity;
-            this.argumentOfPerigee = argumentOfPerigee;
-            this.meanAnomaly = meanAnomaly;
-            this.meanMotion = meanMotion;
-            return this;
-        }
-
-        /**
-         * Sets the first derivative of the mean motion, divided by <code>2</code> and returns the
-         * element set number step.
-         *
-         * @param d the first derivative of the mean motion, divided by <code>2</code>, to be set
-         * @return the next step
-         */
-        @Override
-        public ElementSetNumberStep setFirstDerivativeMeanMotion(double d) {
-            this.firstDerivativeOfMeanMotion = d;
-            return this;
-        }
-
-        /**
-         * Sets the element set number and returns the revolutions step.
+         * Sets the element set number and returns the orbital elements step.
          *
          * @param i the element set number to be set
          * @return the next step
+         * @throws IllegalArgumentException if <code>i</code> is out of range (0 to 9,999)
          */
         @Override
-        public RevolutionsStep setElementSetNumber(int i) {
+        public OrbitalElementsStep setElementSetNumber(int i) {
             if (i < 0 || i > 9999) {
-                throw new IllegalArgumentException("Element set number out of range (0-9999): " + i);
+                throw new IllegalArgumentException("Element set number out of range (0 to 9,999): " + i);
             }
             this.elementSetNumber = i;
             return this;
         }
 
         /**
-         * Sets the revolutions number and returns the build step.
+         * Sets the orbital elements and returns the revolutions number step.
+         *
+         * @param inclination the inclination to be set (0 to 180 degrees)
+         * @param raan the right ascension of the ascending node (RAAN) to be set (0 to 360 degrees)
+         * @param eccentricity the eccentricity to be set (0 to 1)
+         * @param argumentOfPerigee the argument of perigee to be set (0 to 360 degrees)
+         * @param meanAnomaly the mean anomaly to be set (0 to 360 degrees)
+         * @throws IllegalArgumentException if any one of the elements is out of range
+         */
+        @Override
+        public RevolutionsStep setOrbitalElements(double inclination, double raan, double eccentricity,
+                                                  double argumentOfPerigee, double meanAnomaly) {
+            if (Double.compare(inclination, 0.0) < 0 || Double.compare(inclination, 180.0) > 0) {
+                throw new IllegalArgumentException("Inclination is out of range (0 to 180): " + inclination);
+            }
+            if (Double.compare(raan, 0.0) < 0 || Double.compare(raan, 360.0) > 0) {
+                throw new IllegalArgumentException("Right ascension of the ascending node (RAAN) is out of range (0 to 360): " + raan);
+            }
+            if (Double.compare(eccentricity, 0.0) < 0 || Double.compare(eccentricity, 1.0) > 0) {
+                throw new IllegalArgumentException("Eccentricity is out of range (0 to 1): " + eccentricity);
+            }
+            if (Double.compare(argumentOfPerigee, 0.0) < 0 || Double.compare(argumentOfPerigee, 360.0) > 0) {
+                throw new IllegalArgumentException("Argument of perigee is out of range (0 to 360): " + argumentOfPerigee);
+            }
+            if (Double.compare(meanAnomaly, 0.0) < 0 || Double.compare(meanAnomaly, 360.0) > 0) {
+                throw new IllegalArgumentException("Mean anomaly is out of range (0 to 360): " + meanAnomaly);
+            }
+            this.inclination = inclination;
+            this.raan = raan;
+            this.eccentricity = eccentricity;
+            this.argumentOfPerigee = argumentOfPerigee;
+            this.meanAnomaly = meanAnomaly;
+            return this;
+        }
+
+        /**
+         * Sets the revolutions number at epoch and returns the mean motion step.
          *
          * @param i the revolutions number at epoch to be set
          * @return the next step
+         * @throws IllegalArgumentException if <code>i</code> is out of range (0 to 99,999)
          */
         @Override
-        public BuildStep setRevolutions(int i) {
+        public MeanMotionStep setRevolutions(int i) {
             if (i < 0 || i > 99999) {
-                throw new IllegalArgumentException("Revolutions number out of range (0-99999): " + i);
+                throw new IllegalArgumentException("Revolutions number out of range (0 to 99,999): " + i);
             }
             this.revolutions = i;
             return this;
         }
 
         /**
-         * Sets the classification character and return the same step (the build step).
+         * Sets the mean motion (revolutions per day) and returns the first time derivative of mean
+         * motion step.
          *
-         * @param c the classification character to be set (either <code>U</code>, <code>S</code>,
-         * or <code>C</code>)
-         * @return this step (the build step)
-         * @throws IllegalArgumentException if the character is not <code>U</code>< <code>S</code>,
-         * or <code>C</code>
+         * @param d the mean motion (revolutions be day) to be set
+         * @return the next step
+         * @throws IllegalArgumentException if <code>d</code> is out of range (0-99)
          */
         @Override
-        public BuildStep setClassification(char c) {
-            if (c != 'U' && c != 'C' && c != 'S') {
-                throw new IllegalArgumentException("Classification must be 'U', 'C' or 'S': " + c);
+        public FirstDerivativeMeanMotionStep setMeanMotion(double d) {
+            if (Double.compare(d, 0.0) < 0 || Double.compare(d, 100.0) >= 0) {
+                throw new IllegalArgumentException("Mean motion out of range (0 to 99): " + d);
             }
-            this.classification = c;
+            this.meanMotion = d;
             return this;
         }
 
         /**
-         * Sets the second derivative of the mean motion, divided by <code>6</code>, and returns the
-         * same step (the build step).
+         * Sets the first time derivative of the mean motion, divided by <code>2</code> and returns
+         * the build step.
+         *
+         * @param d the first time derivative of the mean motion, divided by <code>2</code>, to be
+         * set
+         * @return the last step
+         * @throws IllegalArgumentException if <code>d</code> is not lie between -1.0 and 1.0
+         */
+        @Override
+        public BuildStep setFirstDerivativeMeanMotion(double d) {
+            if (Double.compare(d, -1.0) <= 0 || Double.compare(d, 1.0) >= 0) {
+                throw new IllegalArgumentException(
+                        "First time derivative of mean motion must be between -1.0 and 1.0: " + d);
+            }
+            this.firstDerivativeOfMeanMotion = d;
+            return this;
+        }
+
+        /**
+         * Sets the second time derivative of the mean motion, divided by <code>6</code>, and
+         * returns the same step (the build step).
          *
          * @param d the second derivative of the mean motion, divided by <code>6</code>, to be set
          * @return this step (the build step)
@@ -428,8 +454,26 @@ public class TLEBuilder {
         }
 
         /**
+         * Sets the classification character and return the same step (the build step).
+         *
+         * @param c the classification character to be set (either <code>U</code>, <code>S</code>,
+         * or <code>C</code>)
+         * @return this step (the build step)
+         * @throws IllegalArgumentException if <code>c</code> is not <code>U</code>< <code>S</code>,
+         * or <code>C</code>
+         */
+        @Override
+        public BuildStep setClassification(char c) {
+            if (c != 'U' && c != 'C' && c != 'S') {
+                throw new IllegalArgumentException("Classification must be 'U', 'C' or 'S': " + c);
+            }
+            this.classification = c;
+            return this;
+        }
+
+        /**
          * Sets the ephemeris type and returns the same step (the build step). The ephemeris type
-         * must be a single-digit value, i.e., 0-9.
+         * must be a single-digit value, i.e., 0 through 9.
          *
          * @param i the ephemeris type to be set, generally <code>0</code>
          * @return this step (the build step)
@@ -438,7 +482,7 @@ public class TLEBuilder {
         @Override
         public BuildStep setEphemerisType(int i) {
             if (i < 0 || i > 9) {
-                throw new IllegalArgumentException("Ephemeris type out of range (0-9): " + i);
+                throw new IllegalArgumentException("Ephemeris type out of range (0 to 9): " + i);
             }
             this.ephemerisType = i;
             return this;

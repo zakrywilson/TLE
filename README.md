@@ -13,6 +13,10 @@ Improved efficiency of EpochUtils class
 - No longer using *synchronized* methods but instead using a single atomic reference to the shared resource  
 - Cutting down on java.util.Calendar instances  
 
+Enhanced TLEBuilder
+
+- Changing around steps for more intuitive TLE construction (e.g., mean motion has been taken out of orbital elements step)  
+- Making TLEBuilder class more robust by adding more input parameter range checks (and throwing IllegalArgumentExceptions in such cases)  
 
 ## Getting Started
 
@@ -83,14 +87,15 @@ The list of steps in order (after calling `TLEBuilder#newBuilder()` or `TLEBuild
 1. **Satellite number step**  
 2. **International designator step**  
 3. **Epoch step**  
-4. **Orbital elements step**  
-5. **First derivative of mean motion step**  
-6. **Element set number step**  
-7. **Revolutions at epoch step**  
-9. **Build step**  
-    a. **Classification** (*optional, default = 'U'*)  
-    b. **Second derivative of mean motion** (*optional, default = 0.0*)  
-    c. **BSTAR drag term** (*optional, default = 0.0*)  
+4. **Element set number step**  
+5. **Orbital elements step**  
+6. **Revolutions at epoch step**  
+7. **Mean motion (revolutions per day) step**  
+8. **First time derivative of mean motion step**  
+9. **Build step**   
+    a. **Second time derivative of mean motion** (*optional, default = 0.0*)  
+    b. **BSTAR drag term** (*optional, default = 0.0*)  
+    c. **Classification** (*optional, default = 'U'*)  
     d. **Ephemeris type** (*optional, default = 0*)  
     e. **Build TLE**
 
@@ -110,12 +115,13 @@ TLE tle = TLEBuilder.newBuilder("ASTROSAT")
                     .setSatelliteNumber(40930)
                     .setInternationalDesignator("15052A")
                     .setEpoch(1480645924864L)
-                    .setOrbitalElements(5.9955, 199.5858, 0.0008223, 335.4454, 24.5477, 14.76067908)
-                    .setFirstDerivativeMeanMotion(.00000876)
                     .setElementSetNumber(999)
+                    .setOrbitalElements(5.9955, 199.5858, 0.0008223, 335.4454, 24.5477)
                     .setRevolutions(6378)
-                    .setClassification('S')
+                    .setMeanMotion(14.76067908)
+                    .setFirstDerivativeMeanMotion(.00000876)
                     .setDragTerm(.000034425)
+                    .setClassification('S')
                     .build();
 ```
 
@@ -124,7 +130,7 @@ You can use the *toString* method to get the whole TLE:
 ```java
 System.out.println(tle);
 // ASTROSAT                
-// 1 40930U 15052A   16337.10561185  .00000876  00000-0  34425-4 0  9999
+// 1 40930S 15052A   16337.10561185  .00000876  00000-0  34425-4 0  9999
 // 2 40930   5.9955 199.5858 0008223 335.4454  24.5477 14.76067908 63780
 ```
 
@@ -132,7 +138,7 @@ Or you can access individual elements:
 
 ```java
 System.out.println(tle.getLine1());
-// 1 40930U 15052A   16337.10561185  .00000876  00000-0  34425-4 0  9999
+// 1 40930S 15052A   16337.10561185  .00000876  00000-0  34425-4 0  9999
 
 System.out.println(tle.getEccentricity());
 // 8.223E-4
