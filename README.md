@@ -59,20 +59,34 @@ cd target
 
 ### Parsing a TLE
 
+Say you have a TLE and you want to pull out the inclination, the BSTAR drag term, and the right ascension of the ascending node (RAAN).
+
 ```java
-// Say you have a TLE
 String title = "ASTROSAT                ";
 String line1 = "1 40930U 15052A   16332.17311884  .00000840  00000-0  29196-4 0  9990";
 String line2 = "2 40930   5.9978 234.6882 0008785 270.8436  89.0759 14.76065788 63051";
+```
 
-// And you want to pull out the inclination, the RAAN, the BSTAR drag term
-// Pass the lines into the constructor
+Pass the lines into the constructor.
+
+```java
 TLE tle = new TLE(title, line1, line2);
+```
 
-// Now you can access any of the elements
+Now you can access any of the elements
+
+```java
 double inclination = tle.getInclination();
+System.out.println(inclination);
+// 5.9978
+
 double raan = tle.getRaan();
+System.out.println(raan);
+// 234.6882
+
 double dragTerm = tle.getDragTerm();
+System.out.println(dragTerm);
+// 2.9196E-5
 ```
 
 ### Building a TLE
