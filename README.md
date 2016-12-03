@@ -48,7 +48,7 @@ cd target
 - Unzip the file.  
 - Navigate to the unzipped file.  
 - Run the following commands inside the root folder:
-```dos
+```bash
 mvn package  
 cd target  
 ```
