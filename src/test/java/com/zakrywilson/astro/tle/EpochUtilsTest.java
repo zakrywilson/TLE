@@ -19,7 +19,7 @@ public class EpochUtilsTest {
     public void toMillisecondEpoch() throws Exception {
         long[] milliseconds = {1455343200000L, 913636800000L, 1000966420800L, 1010041881552L};
         int[] years = {2016, 1998, 2001, 2002};
-        double[] days = {44.25000000, 348.50000000, 263.25950000, 3.29955500};
+        double[] days = {44.25, 348.5, 263.2595, 3.299555};
         for (int i = 0; i < milliseconds.length; i++) {
             long result = EpochUtils.toMillisecondEpoch(years[i], days[i]);
             if (result != milliseconds[i]) {
@@ -78,7 +78,7 @@ public class EpochUtilsTest {
      */
     @Test
     public void getEpochJulianDay() throws Exception {
-        double[] days = {44.25000000, 348.50000000, 263.25950000, 3.29955500};
+        double[] days = {44.25, 348.5, 263.2595, 3.299555};
         long[] milliseconds = {1455343200000L, 913636800000L, 1000966420800L, 1010041881552L};
         for (int i = 0; i < days.length; i++) {
             double result = EpochUtils.getEpochJulianDay(milliseconds[i]);
