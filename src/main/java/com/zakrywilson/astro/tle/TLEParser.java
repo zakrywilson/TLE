@@ -34,13 +34,14 @@ final class TLEParser {
     private int    checksumLine2;
 
     /**
-     * Constructs a new <tt>TLEParser</tt> with the title and lines 1 and 2 of the TLE.
+     * Constructs a new <code>TLEParser</code> with the title and lines 1 and 2 of the TLE.
      *
-     * @param title the title line of the TLE to be set. A <tt>null</tt> value results in
-     * <tt>title</tt> being set as an empty string.
-     * @param line1 line 1 of the TLE to be set, not <tt>null</tt>
-     * @param line2 line 2 of the TLE to be set, not <tt>null</tt>
-     * @throws IllegalArgumentException if <tt>line1</tt> or <tt>line2</tt> are <tt>null</tt>
+     * @param title the title line of the TLE to be set. A <code>null</code> value results in
+     * <code>title</code> being set as an empty string.
+     * @param line1 line 1 of the TLE to be set, not <code>null</code>
+     * @param line2 line 2 of the TLE to be set, not <code>null</code>
+     * @throws IllegalArgumentException if <code>line1</code> or <code>line2</code> are
+     * <code>null</code>
      */
     TLEParser(String title, String line1, String line2) {
         if (line1 == null || line2 == null) {
@@ -53,10 +54,10 @@ final class TLEParser {
     }
 
     /**
-     * Constructs a new <tt>TLEParser</tt> with lines 1 and 2 of the TLE.
+     * Constructs a new <code>TLEParser</code> with lines 1 and 2 of the TLE.
      *
-     * @param line1 line 1 of the TLE to be set, not <tt>null</tt>
-     * @param line2 line 2 of the TLE to be set, not <tt>null</tt>
+     * @param line1 line 1 of the TLE to be set, not <code>null</code>
+     * @param line2 line 2 of the TLE to be set, not <code>null</code>
      */
     TLEParser(String line1, String line2) {
         this(null, line1, line2);
@@ -90,7 +91,7 @@ final class TLEParser {
     }
 
     /**
-     * Returns the line number from the first line (should be <tt>1</tt>).
+     * Returns the line number from the first line (should be <code>1</code>).
      *
      * @return the line number
      */
@@ -108,8 +109,8 @@ final class TLEParser {
     }
 
     /**
-     * Returns the classification character from the TLE (either <tt>U</tt>, <tt>S</tt>, or
-     * <tt>C</tt>).
+     * Returns the classification character from the TLE (either <code>U</code>, <code>S</code>, or
+     * <code>C</code>).
      *
      * @return the classification
      */
@@ -201,7 +202,7 @@ final class TLEParser {
     }
 
     /**
-     * Returns the line number from the second line (should be <tt>2</tt>).
+     * Returns the line number from the second line (should be <code>2</code>).
      *
      * @return the line number
      */
@@ -315,10 +316,10 @@ final class TLEParser {
     }
 
     /**
-     * Parses an exponential value in TLE format (e.g., <tt>00000-0</tt>).
+     * Parses an exponential value in TLE format (e.g., <code>00000-0</code>).
      *
-     * @param s the <tt>String</tt> to be parsed
-     * @return the value of <tt>s</tt>
+     * @param s the <code>String</code> to be parsed
+     * @return the value of <code>s</code>
      */
     private double parseExponentialValue(String s) {
         // If a '+' sign is in the string, this means it is 0.0 for the drag term

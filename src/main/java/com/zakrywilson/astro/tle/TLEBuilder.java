@@ -186,12 +186,12 @@ public class TLEBuilder {
         private int    revolutions;
 
         /**
-         * Constructs a new <tt>Steps</tt> with a blank TLE title.
+         * Constructs a new <code>Steps</code> with a blank TLE title.
          */
         Steps() {}
 
         /**
-         * Constructs a new <tt>Steps</tt> with the TLE title.
+         * Constructs a new <code>Steps</code> with the TLE title.
          *
          * @param title the title to be set
          */
@@ -247,8 +247,8 @@ public class TLEBuilder {
         /**
          * Sets the international designator and returns the epoch step. The international
          * designator must be the 2-digit year, joined with the 3-digit day of the year, followed 1
-         * to 3 characters, corresponding to the launch piece. For example <tt>98067  A</tt> is an
-         * international designator from February 1998.
+         * to 3 characters, corresponding to the launch piece. For example <code>98067  A</code> is
+         * an international designator from February 1998.
          *
          * @param s the international designator to be set
          * @return the next step
@@ -270,9 +270,9 @@ public class TLEBuilder {
 
         /**
          * Sets the epoch year and fractional Julian day and returns the orbital elements step. The
-         * epoch year must be in the format such as <tt>2012</tt>, not <tt>12</tt>. Note that this
-         * Julian day is the Julian day minus the epoch year, i.e., the epoch fractional Julian day
-         * must not exceed 366.0.
+         * epoch year must be in the format such as <code>2012</code>, not <code>12</code>. Note
+         * that this Julian day is the Julian day minus the epoch year, i.e., the epoch fractional
+         * Julian day must not exceed 366.0.
          *
          * @param year the epoch year to be set
          * @param day the epoch day to be set
@@ -332,10 +332,10 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the first derivative of the mean motion, divided by <tt>2</tt> and returns the
+         * Sets the first derivative of the mean motion, divided by <code>2</code> and returns the
          * element set number step.
          *
-         * @param d the first derivative of the mean motion, divided by <tt>2</tt>, to be set
+         * @param d the first derivative of the mean motion, divided by <code>2</code>, to be set
          * @return the next step
          */
         @Override
@@ -379,11 +379,11 @@ public class TLEBuilder {
         /**
          * Sets the classification character and return the same step (the build step).
          *
-         * @param c the classification character to be set (either <tt>U</tt>,
-         * <tt>S</tt>, or <tt>C</tt>)
+         * @param c the classification character to be set (either <code>U</code>, <code>S</code>,
+         * or <code>C</code>)
          * @return this step (the build step)
-         * @throws IllegalArgumentException if the character is not <tt>U</tt>< <tt>S</tt>, or
-         * <tt>C</tt>
+         * @throws IllegalArgumentException if the character is not <code>U</code>< <code>S</code>,
+         * or <code>C</code>
          */
         @Override
         public BuildStep setClassification(char c) {
@@ -396,10 +396,10 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the second derivative of the mean motion, divided by <tt>6</tt>, and returns the
+         * Sets the second derivative of the mean motion, divided by <code>6</code>, and returns the
          * same step (the build step).
          *
-         * @param d the second derivative of the mean motion, divided by <tt>6</tt>, to be set
+         * @param d the second derivative of the mean motion, divided by <code>6</code>, to be set
          * @return this step (the build step)
          */
         @Override
@@ -424,7 +424,7 @@ public class TLEBuilder {
          * Sets the ephemeris type and returns the same step (the build step). The ephemeris type
          * must be a single-digit value, i.e., 0-9.
          *
-         * @param i the ephemeris type to be set, generally <tt>0</tt>
+         * @param i the ephemeris type to be set, generally <code>0</code>
          * @return this step (the build step)
          * @throws IllegalArgumentException if the ephemeris type is not between 0 and 9
          */

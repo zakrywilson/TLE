@@ -22,9 +22,9 @@ final class TLEFormatter {
      *
      * @param satelliteNumber the satellite number to be set
      * @param classification the classification character to be set. Must be one of the following:
-     * <tt>U</tt>, <tt>C</tt>, or <tt>S</tt>.
+     * <code>U</code>, <code>C</code>, or <code>S</code>.
      * @param internationalDesignator the international designator to be set
-     * @param epochYear the epoch year of the launch to be set. Must be in <tt>YYYY</tt> format.
+     * @param epochYear the epoch year of the launch to be set. Must be in <code>YYYY</code> format.
      * @param epochDay the fractional Julian day of the launch to be set
      * @param firstDerivativeOfMeanMotion the 1st derivative of the mean motion (divided by 2) to be set
      * @param secondDerivativeOfMeanMotion the 2nd derivative of the mean motion (divided by 6) to be set

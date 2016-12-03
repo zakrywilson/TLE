@@ -43,9 +43,9 @@ public final class TLE {
     /**
      * Constructs a new TLE from the title line and lines 1 and 2 of the TLE.
      *
-     * @param title the title to be set, can be <tt>null</tt>
-     * @param line1 line 1 to be set, not <tt>null</tt>
-     * @param line2 line 2 to be set, not <tt>null</tt>
+     * @param title the title to be set, can be <code>null</code>
+     * @param line1 line 1 to be set, not <code>null</code>
+     * @param line2 line 2 to be set, not <code>null</code>
      */
     public TLE(String title, String line1, String line2) {
         parse(title, line1, line2);
@@ -54,8 +54,8 @@ public final class TLE {
     /**
      * Constructs a new TLE from lines 1 and 2 of a TLE.
      *
-     * @param line1 line 1 to be set, not <tt>null</tt>
-     * @param line2 line 2 to be set, not <tt>null</tt>
+     * @param line1 line 1 to be set, not <code>null</code>
+     * @param line2 line 2 to be set, not <code>null</code>
      */
     public TLE(String line1, String line2) {
         this("", line1, line2);
@@ -146,7 +146,7 @@ public final class TLE {
     }
 
     /**
-     * Returns the first derivative of the mean motion, divided by <tt>2</tt>, of the TLE.
+     * Returns the first derivative of the mean motion, divided by <code>2</code>, of the TLE.
      *
      * @return the first derivative of the mean motion
      */
@@ -155,7 +155,7 @@ public final class TLE {
     }
 
     /**
-     * Returns the second derivative of the mean motion, divided by <tt>6</tt>, of the TLE.
+     * Returns the second derivative of the mean motion, divided by <code>6</code>, of the TLE.
      *
      * @return the second derivative of the mean motion
      */
@@ -326,7 +326,8 @@ public final class TLE {
     }
 
     /**
-     * Sets the classification of the TLE, either (<tt>U</tt>, <tt>S</tt>, or <tt>C</tt>).
+     * Sets the classification of the TLE, either (<code>U</code>, <code>S</code>, or
+     * <code>C</code>).
      *
      * @param classification the classification to be set
      */
@@ -362,7 +363,7 @@ public final class TLE {
     }
 
     /**
-     * Sets the first derivative of the mean motion, divided by <tt>2</tt>, of the TLE.
+     * Sets the first derivative of the mean motion, divided by <code>2</code>, of the TLE.
      *
      * @param firstDerivativeOfMeanMotion the first derivative of the mean motion to be set
      */
@@ -371,7 +372,7 @@ public final class TLE {
     }
 
     /**
-     * Sets the second derivative of the mean motion, divided by <tt>6</tt>, of the TLE.
+     * Sets the second derivative of the mean motion, divided by <code>6</code>, of the TLE.
      *
      * @param secondDerivativeOfMeanMotion the second derivative of the mean motion to be set
      */
@@ -523,10 +524,11 @@ public final class TLE {
     /**
      * Indicates whether some other TLE is "equal to" this one.
      * <p>
-     * Compares all of the TLEs' separate attributes <b>except</b> for the <tt>Strings</tt>, lines 1
-     * and 2. Instead, the individual elements that make up the lines are compared. This will ensure
-     * that two TLEs with slightly different formatting but the same data to be considered equal.
-     * Some such cases are when values in a TLE may lead with <tt>0</tt>'s instead of whitespaces.
+     * Compares all of the TLEs' separate attributes <b>except</b> for the <code>Strings</code>,
+     * lines 1 and 2. Instead, the individual elements that make up the lines are compared. This
+     * will ensure that two TLEs with slightly different formatting but the same data to be
+     * considered equal. Some such cases are when values in a TLE may lead with <code>0</code>'s
+     * instead of whitespaces.
      * <p>
      * The list of elements to be compared: title, satellite number, classification type, epoch
      * year, epoch day, first derivative of mean motion, second derivative of mean motion, drag
@@ -535,7 +537,8 @@ public final class TLE {
      * revolutions at epoch.
      *
      * @param obj the reference object with which to compare
-     * @return <tt>true</tt> if this object is the same as <tt>obj</tt>, <tt>false</tt> if otherwise
+     * @return <code>true</code> if this object is the same as <code>obj</code>, <code>false</code>
+     * if otherwise
      */
     @Override
     public boolean equals(Object obj) {
