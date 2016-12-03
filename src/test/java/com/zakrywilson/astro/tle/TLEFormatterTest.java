@@ -22,9 +22,10 @@ public class TLEFormatterTest {
      * Used to easily access elements in {@link TLEFormatterTest#TLEs}.
      */
     enum TLEElement {
-        LINE_1, LINE_2, SATELLITE_NUMBER, CLASSIFICATION, INTERNATIONAL_DESIGNATOR, EPOCH_YEAR, EPOCH_DAY,
-        FIRST_DER, SECOND_DER, DRAG, EPHEMERIS_TYPE, ELEMENT_SET_NUMBER, CHECKSUM_1, INCLINATION,
-        RAAN, ECCENTRICITY, ARGUMENT_OF_PERIGEE, MEAN_ANOMALY, MEAN_MOTION, REVOLUTIONS, CHECKSUM_2
+        LINE_1, LINE_2, SATELLITE_NUMBER, CLASSIFICATION, INTERNATIONAL_DESIGNATOR, EPOCH_YEAR,
+        EPOCH_DAY, FIRST_DER, SECOND_DER, DRAG, EPHEMERIS_TYPE, ELEMENT_SET_NUMBER, CHECKSUM_1,
+        INCLINATION, RAAN, ECCENTRICITY, ARGUMENT_OF_PERIGEE, MEAN_ANOMALY, MEAN_MOTION,
+        REVOLUTIONS, CHECKSUM_2
     }
 
     /**
@@ -91,7 +92,7 @@ public class TLEFormatterTest {
         TLEs.add(tle1);
 
         Map<TLEElement, String> tle2 = new EnumMap<>(TLEElement.class);
-        tle2.put(LINE_1, "1 23802U 96013A   22331.41525705 -.00000380  74600-4  00000+0 2  9678");
+        tle2.put(LINE_1, "1 23802U 96013A   22331.41525705 -.00000380  74600-4  00000+0 2  9673");
         tle2.put(LINE_2, "2 23802  78.3477 275.1928 7458454 331.3390   2.5535  1.29841762 99521");
         tle2.put(SATELLITE_NUMBER, "23802");
         tle2.put(CLASSIFICATION, "U");
@@ -103,7 +104,7 @@ public class TLEFormatterTest {
         tle2.put(DRAG, "0.0");
         tle2.put(EPHEMERIS_TYPE, "2");
         tle2.put(ELEMENT_SET_NUMBER, "967");
-        tle2.put(CHECKSUM_1, "8");
+        tle2.put(CHECKSUM_1, "3");
         tle2.put(INCLINATION, "78.3477");
         tle2.put(RAAN, "275.1928");
         tle2.put(ECCENTRICITY, ".7458454");
@@ -115,7 +116,7 @@ public class TLEFormatterTest {
         TLEs.add(tle2);
 
         Map<TLEElement, String> tle3 = new EnumMap<>(TLEElement.class);
-        tle3.put(LINE_1, "1 25560U 98071A   00330.55212799  .00000504  00000-0  56670-4 3 48733");
+        tle3.put(LINE_1, "1 25560U 98071A   00330.55212799  .00000504  00000-0  56670-4 3 48734");
         tle3.put(LINE_2, "2 25560  69.9002  52.8454 0006133 157.9681 202.1740 14.93240737975146");
         tle3.put(SATELLITE_NUMBER, "25560");
         tle3.put(CLASSIFICATION, "U");
@@ -127,7 +128,7 @@ public class TLEFormatterTest {
         tle3.put(DRAG, ".000056670");
         tle3.put(EPHEMERIS_TYPE, "3");
         tle3.put(ELEMENT_SET_NUMBER, "4873");
-        tle3.put(CHECKSUM_1, "3");
+        tle3.put(CHECKSUM_1, "4");
         tle3.put(INCLINATION, "69.9002");
         tle3.put(RAAN, "52.8454");
         tle3.put(ECCENTRICITY, ".0006133");
@@ -139,7 +140,7 @@ public class TLEFormatterTest {
         TLEs.add(tle3);
 
         Map<TLEElement, String> tle4 = new EnumMap<>(TLEElement.class);
-        tle4.put(LINE_1, "1 25635U 99008B   89331.44324332  .00000046 -95738-5 -18414-4 4 32058");
+        tle4.put(LINE_1, "1 25635U 99008B   89331.44324332  .00000046 -95738-5 -18414-4 4 32054");
         tle4.put(LINE_2, "2 25635  96.4728 278.0869 0139138 173.2587 187.0527 14.47945711936895");
         tle4.put(SATELLITE_NUMBER, "25635");
         tle4.put(CLASSIFICATION, "U");
@@ -151,7 +152,7 @@ public class TLEFormatterTest {
         tle4.put(DRAG, "-.000018414");
         tle4.put(EPHEMERIS_TYPE, "4");
         tle4.put(ELEMENT_SET_NUMBER, "3205");
-        tle4.put(CHECKSUM_1, "8");
+        tle4.put(CHECKSUM_1, "4");
         tle4.put(INCLINATION, "96.4728");
         tle4.put(RAAN, "278.0869");
         tle4.put(ECCENTRICITY, ".0139138");
@@ -164,7 +165,7 @@ public class TLEFormatterTest {
     }
 
     /**
-     * Tests {@link TLEFormatter#formatLine1(int, char, String, int, double, double, double, double, int, int, int)}.
+     * Tests {@link TLEFormatter#formatLine1(int, char, String, int, double, double, double, double, int, int)}.
      *
      * @throws Exception if an unexpected error should occur
      */
@@ -181,7 +182,6 @@ public class TLEFormatterTest {
         double dragTerm;
         int ephemerisType;
         int elementSetNumber;
-        int checksum;
 
         for (Map<TLEElement, String> tle : TLEs) {
             satelliteNumber = Integer.parseInt(tle.get(SATELLITE_NUMBER));
@@ -194,24 +194,24 @@ public class TLEFormatterTest {
             dragTerm = Double.parseDouble(tle.get(DRAG));
             ephemerisType = Integer.parseInt(tle.get(EPHEMERIS_TYPE));
             elementSetNumber = Integer.parseInt(tle.get(ELEMENT_SET_NUMBER));
-            checksum = Integer.parseInt(tle.get(CHECKSUM_1));
 
             line1 = TLEFormatter
                     .formatLine1(satelliteNumber, classification, internationalDesignator,
                                  epochYear, epochDay, firstDerivativeMeanMotion,
                                  secondDerivativeMeanMotion, dragTerm, ephemerisType,
-                                 elementSetNumber, checksum);
+                                 elementSetNumber);
 
             line1Expected = tle.get(LINE_1);
             if (!line1.equals(line1Expected)) {
-                Assert.fail(String.format("Line 1 not parsed correctly: expected='%s', received='%s'",
-                                          line1Expected, line1));
+                Assert.fail(
+                        String.format("Line 1 not parsed correctly: expected='%s', received='%s'",
+                                      line1Expected, line1));
             }
         }
     }
 
     /**
-     * Tests {@link TLEFormatter#formatLine2(int, double, double, double, double, double, double, int, int)}.
+     * Tests {@link TLEFormatter#formatLine2(int, double, double, double, double, double, double, int)}.
      *
      * @throws Exception if an unexpected error should occur
      */
@@ -226,7 +226,6 @@ public class TLEFormatterTest {
         double meanAnomaly;
         double meanMotion;
         int revolutions;
-        int checksum;
 
         for (Map<TLEElement, String> tle : TLEs) {
             satelliteNumber = Integer.parseInt(tle.get(SATELLITE_NUMBER));
@@ -237,15 +236,15 @@ public class TLEFormatterTest {
             meanAnomaly = Double.parseDouble(tle.get(MEAN_ANOMALY));
             meanMotion = Double.parseDouble(tle.get(MEAN_MOTION));
             revolutions = Integer.parseInt(tle.get(REVOLUTIONS));
-            checksum = Integer.parseInt(tle.get(CHECKSUM_2));
 
             line2 = TLEFormatter
                     .formatLine2(satelliteNumber, inclination, raan, eccentricity,
-                                 argumentOfPerigee, meanAnomaly, meanMotion, revolutions, checksum);
+                                 argumentOfPerigee, meanAnomaly, meanMotion, revolutions);
             line2Expected = tle.get(LINE_2);
             if (!line2.equals(line2Expected)) {
-                Assert.fail(String.format("Line 2 not parsed correctly: %nexpected='%s', %nreceived='%s'",
-                                          line2Expected, line2));
+                Assert.fail(String.format(
+                        "Line 2 not parsed correctly: %nexpected='%s', %nreceived='%s'",
+                        line2Expected, line2));
             }
         }
     }

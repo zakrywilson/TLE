@@ -18,7 +18,7 @@ final class TLEFormatter {
     private TLEFormatter() {}
 
     /**
-     * Returns line 1 of a TLE, formatted with the provided fields.
+     * Returns line 1 of a TLE, formatted with the provided fields and a newly generated checksum.
      *
      * @param satelliteNumber the satellite number to be set
      * @param classification the classification character to be set. Must be one of the following:
@@ -31,26 +31,26 @@ final class TLEFormatter {
      * @param dragTerm the BSTAR drag term to be set
      * @param ephemerisType the ephemeris type to be set
      * @param elementSetNumber the element set number to be set
-     * @param checksum the checksum (modulo 10) to be set
      * @return the line
      */
     static String formatLine1(int satelliteNumber, char classification,
                               String internationalDesignator, int epochYear, double epochDay,
                               double firstDerivativeOfMeanMotion,
                               double secondDerivativeOfMeanMotion, double dragTerm,
-                              int ephemerisType, int elementSetNumber, int checksum) {
-        return String.format("1 %s%s %s %s %s %s %s %s %s%d",
+                              int ephemerisType, int elementSetNumber) {
+        String line = String.format("1 %s%s %s %s %s %s %s %s %s",
                              TLEFormatter.formatSatelliteNumber(satelliteNumber), classification,
                              TLEFormatter.formatInternationalDesignator(internationalDesignator),
                              TLEFormatter.formatEpoch(epochYear, epochDay),
                              TLEFormatter.formatMeanMotionFirstDerivative(firstDerivativeOfMeanMotion),
                              TLEFormatter.formatMeanMotionSecondDerivative(secondDerivativeOfMeanMotion),
                              TLEFormatter.formatDragTerm(dragTerm), ephemerisType,
-                             TLEFormatter.formatElementSetNumber(elementSetNumber), checksum);
+                             TLEFormatter.formatElementSetNumber(elementSetNumber));
+        return line + ChecksumUtils.generateChecksum(line);
     }
 
     /**
-     * Returns line 2 of a TLE, formatted with the provided fields.
+     * Returns line 2 of a TLE, formatted with the provided fields and a newly generated checksum.
      *
      * @param satelliteNumber the satellite number to be set
      * @param inclination the inclination (in degrees) to be set
@@ -60,13 +60,12 @@ final class TLEFormatter {
      * @param meanAnomaly the mean anomaly (in degrees) to be set
      * @param meanMotion the mean motion (in degrees) to be set
      * @param revolutions the revolutions number at epoch to be set
-     * @param checksum the checksum (modulo 10) to be set
      * @return the line
      */
     static String formatLine2(int satelliteNumber, double inclination, double raan,
                               double eccentricity, double argumentOfPerigee, double meanAnomaly,
-                              double meanMotion, int revolutions, int checksum) {
-        return String.format("2 %s %s %s %s %s %s %s%s%d",
+                              double meanMotion, int revolutions) {
+        String line =  String.format("2 %s %s %s %s %s %s %s%s",
                              TLEFormatter.formatSatelliteNumber(satelliteNumber),
                              TLEFormatter.formatInclination(inclination),
                              TLEFormatter.formatRaan(raan),
@@ -74,7 +73,8 @@ final class TLEFormatter {
                              TLEFormatter.formatArgumentOfPerigee(argumentOfPerigee),
                              TLEFormatter.formatMeanAnomaly(meanAnomaly),
                              TLEFormatter.formatMeanMotion(meanMotion),
-                             TLEFormatter.formatRevolutions(revolutions), checksum);
+                             TLEFormatter.formatRevolutions(revolutions));
+        return line + ChecksumUtils.generateChecksum(line);
     }
 
     private static String formatSatelliteNumber(int i) {

@@ -4,6 +4,10 @@ package com.zakrywilson.astro.tle;
  * Represents a TLE (<a href="https://en.wikipedia.org/wiki/Two-line_element_set">Two Line Element
  * Set</a>).
  * <p>
+ * Provides methods for extracting elements from the TLE lines, performing necessary conversions
+ * implicitly. Methods to check validity of lines with respect to their checksums are also
+ * available through the {@link #isLine1Valid()} and {@link #isLine2Valid()}.
+ * <p>
  * Creating a TLE can be done by providing the TLE lines to one of the public constructors or by
  * using {@link com.zakrywilson.astro.tle.TLEBuilder} to construct a TLE manually. The builder is
  * useful if you have individual elements that need to be formatted into a TLE.
@@ -265,6 +269,24 @@ public final class TLE {
      */
     public int getChecksumLine2() {
         return checksumLine2;
+    }
+
+    /**
+     * Determines whether line 1 of the TLE is valid with respect to the checksum.
+     *
+     * @return <code>true</code> if the line is valid
+     */
+    public boolean isLine1Valid() {
+        return ChecksumUtils.isChecksumValid(line1);
+    }
+
+    /**
+     * Determines whether line 2 of the TLE is valid with respect to the checksum.
+     *
+     * @return <code>true</code> if the line is valid
+     */
+    public boolean isLine2Valid() {
+        return ChecksumUtils.isChecksumValid(line2);
     }
 
     /**

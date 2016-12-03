@@ -13,9 +13,11 @@ package com.zakrywilson.astro.tle;
  * {@link EpochStep#setEpoch(int, double)} or {@link EpochStep#setEpoch(long)}, and so forth.
  * Once all the required steps have been completed, {@link BuildStep#build()} will be available for
  * the TLE to be built. When the TLE is allowed to be built, the optional elements will also be
- * available to be set, such as <i>classification</i> and <i>ephemeris type</i>. Note that there are
- * constraints on the values for the TLE: most setters may throw an {@link IllegalArgumentException}
- * if the values are invalid.
+ * available to be set, such as <i>classification</i> and <i>ephemeris type</i>. There is also no
+ * checksum step: checksums are calculated when the TLE lines are generated.
+ * <p>
+ * Note that there are constraints on the values for the TLE: most setters may throw an
+ * {@link IllegalArgumentException} if the values are invalid.
  * <p>
  * The list of steps in order (after calling {@link TLEBuilder#newBuilder()} or
  * {@link TLEBuilder#newBuilder(String)}:
@@ -27,7 +29,6 @@ package com.zakrywilson.astro.tle;
  *   <li>First derivative of mean motion</li>
  *   <li>Element set number</li>
  *   <li>Revolutions at epoch</li>
- *   <li>Checksums</li>
  *   <li>
  *     Build step
  *     <ul>
@@ -39,8 +40,8 @@ package com.zakrywilson.astro.tle;
  *     </ul>
  *   </li>
  * </ol>
- * As you can see, after the <i>checksums</i> step, the TLE can now be built or any number of the
- * optional elements can be set before calling {@link BuildStep#build()}.
+ * As you can see, after the <i>revolutions at epoch</i> step, the TLE can now be built or any
+ * number of the optional elements can be set before calling {@link BuildStep#build()}.
  * <p>
  * Example usage:
  * <pre>
@@ -52,7 +53,6 @@ package com.zakrywilson.astro.tle;
  *                     .setFirstDerivativeMeanMotion(-.00000439)
  *                     .setElementSetNumber(292)
  *                     .setRevolutions(56353)
- *                     .setChecksumLine1(7)
  *                     .setClassification('U')
  *                     .setEphemerisType(8)
  *                     .build();
@@ -139,17 +139,10 @@ public class TLEBuilder {
     }
 
     /**
-     * The revolutions step that returns the checksums step.
+     * The revolutions step that returns the build step.
      */
     public interface RevolutionsStep {
-        ChecksumsStep setRevolutions(int i);
-    }
-
-    /**
-     * The checksum step that returns the build step.
-     */
-    public interface ChecksumsStep {
-        BuildStep setChecksums(int line1, int line2);
+        BuildStep setRevolutions(int i);
     }
 
     /**
@@ -168,9 +161,8 @@ public class TLEBuilder {
      */
     private static class Steps implements SatelliteNumberStep, InternationalDesignatorStep,
                                           EpochStep, OrbitalElementsStep,
-                                          FirstDerivativeMeanMotionStep,
-                                          ElementSetNumberStep, RevolutionsStep, ChecksumsStep,
-                                          BuildStep {
+                                          FirstDerivativeMeanMotionStep, ElementSetNumberStep,
+                                          RevolutionsStep, BuildStep {
         private String title = "";
         private String line1;
         private String line2;
@@ -185,7 +177,6 @@ public class TLEBuilder {
         private double dragTerm = 0.0;                     // Optional: default is 0.0
         private int    ephemerisType = 0;                  // Optional: default is 0
         private int    elementSetNumber;
-        private int    checksumLine1;
         private double inclination;
         private double raan;
         private double eccentricity;
@@ -193,7 +184,6 @@ public class TLEBuilder {
         private double meanAnomaly;
         private double meanMotion;
         private int    revolutions;
-        private int    checksumLine2;
 
         /**
          * Constructs a new <tt>Steps</tt> with a blank TLE title.
@@ -222,8 +212,7 @@ public class TLEBuilder {
         @Override
         public InternationalDesignatorStep setSatelliteNumber(int i) {
             if (i < 1 || i > 99999) {
-                throw new IllegalArgumentException(
-                        "Satellite number out of range (1-99999): " + i);
+                throw new IllegalArgumentException("Satellite number out of range (1-99999): " + i);
             }
             this.satelliteNumber = i;
             return this;
@@ -372,38 +361,18 @@ public class TLEBuilder {
         }
 
         /**
-         * Sets the revolutions number and returns the checksums step.
+         * Sets the revolutions number and returns the build step.
          *
          * @param i the revolutions number at epoch to be set
          * @return the next step
          */
         @Override
-        public ChecksumsStep setRevolutions(int i) {
+        public BuildStep setRevolutions(int i) {
             if (i < 0 || i > 99999) {
                 throw new IllegalArgumentException(
                         "Revolutions number out of range (0-99999): " + i);
             }
             this.revolutions = i;
-            return this;
-        }
-
-        /**
-         * Sets the checksums for both lines and returns the build step.
-         *
-         * @param line1 the checksum (modulo 10) for line 1 to be set
-         * @param line2 the checksum (modulo 10) for line 2 to be set
-         * @return the build step
-         */
-        @Override
-        public BuildStep setChecksums(int line1, int line2) {
-            if (line1 < 0 || line1 > 9) {
-                throw new IllegalArgumentException("Checksum for line 1 out of range (0-9): " + line1);
-            }
-            if (line2 < 0 || line2 > 9) {
-                throw new IllegalArgumentException("Checksum for line 2 out of range (0-9): " + line2);
-            }
-            this.checksumLine1 = line1;
-            this.checksumLine2 = line2;
             return this;
         }
 
@@ -469,7 +438,8 @@ public class TLEBuilder {
         }
 
         /**
-         * Constructs a new TLE from the previously provided data.
+         * Constructs a new TLE from the previously provided data and generates checksums for each
+         * line.
          *
          * @return a new TLE
          */
@@ -479,11 +449,11 @@ public class TLEBuilder {
                     .formatLine1(satelliteNumber, classification, internationalDesignator,
                                  epochYear, epochDay, firstDerivativeOfMeanMotion,
                                  secondDerivativeOfMeanMotion, dragTerm, ephemerisType,
-                                 elementSetNumber, checksumLine1);
+                                 elementSetNumber);
             line2 = TLEFormatter
                     .formatLine2(satelliteNumber, inclination, raan, eccentricity,
-                                 argumentOfPerigee, meanAnomaly, meanMotion, revolutions,
-                                 checksumLine2);
+                                 argumentOfPerigee, meanAnomaly, meanMotion, revolutions);
+
             TLE tle = new TLE();
             tle.setTitle(title);
             tle.setLine1(line1);
@@ -498,7 +468,7 @@ public class TLEBuilder {
             tle.setDragTerm(dragTerm);
             tle.setEphemerisType(ephemerisType);
             tle.setElementSetNumber(elementSetNumber);
-            tle.setChecksumLine1(checksumLine1);
+            tle.setChecksumLine1(Integer.parseInt(line1.substring(68)));
             tle.setInclination(inclination);
             tle.setRaan(raan);
             tle.setEccentricity(eccentricity);
@@ -506,7 +476,7 @@ public class TLEBuilder {
             tle.setMeanAnomaly(meanAnomaly);
             tle.setMeanMotion(meanMotion);
             tle.setRevolutions(revolutions);
-            tle.setChecksumLine2(checksumLine2);
+            tle.setChecksumLine2(Integer.parseInt(line1.substring(68)));
             return tle;
         }
 

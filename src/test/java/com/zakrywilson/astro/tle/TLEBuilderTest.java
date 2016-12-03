@@ -95,7 +95,7 @@ public class TLEBuilderTest {
 
         Map<TLEElement, String> tle2 = new EnumMap<>(TLEElement.class);
         tle2.put(TITLE, "POLAR                   ");
-        tle2.put(LINE_1, "1 23802U 96013A   22331.41525705 -.00000380  74600-4  00000+0 2  9678");
+        tle2.put(LINE_1, "1 23802U 96013A   22331.41525705 -.00000380  74600-4  00000+0 2  9673");
         tle2.put(LINE_2, "2 23802  78.3477 275.1928 7458454 331.3390   2.5535  1.29841762 99521");
         tle2.put(SATELLITE_NUMBER, "23802");
         tle2.put(CLASSIFICATION, "U");
@@ -120,7 +120,7 @@ public class TLEBuilderTest {
 
         Map<TLEElement, String> tle3 = new EnumMap<>(TLEElement.class);
         tle3.put(TITLE, "SWAS                    ");
-        tle3.put(LINE_1, "1 25560U 98071A   00330.55212799  .00000504  00000-0  56670-4 3 48733");
+        tle3.put(LINE_1, "1 25560U 98071A   00330.55212799  .00000504  00000-0  56670-4 3 48734"); // was 3
         tle3.put(LINE_2, "2 25560  69.9002  52.8454 0006133 157.9681 202.1740 14.93240737975146");
         tle3.put(SATELLITE_NUMBER, "25560");
         tle3.put(CLASSIFICATION, "U");
@@ -132,7 +132,7 @@ public class TLEBuilderTest {
         tle3.put(DRAG, ".000056670");
         tle3.put(EPHEMERIS_TYPE, "3");
         tle3.put(ELEMENT_SET_NUMBER, "4873");
-        tle3.put(CHECKSUM_1, "3");
+        tle3.put(CHECKSUM_1, "4");
         tle3.put(INCLINATION, "69.9002");
         tle3.put(RAAN, "52.8454");
         tle3.put(ECCENTRICITY, ".0006133");
@@ -145,7 +145,7 @@ public class TLEBuilderTest {
 
         Map<TLEElement, String> tle4 = new EnumMap<>(TLEElement.class);
         tle4.put(TITLE, "ORSTED                  ");
-        tle4.put(LINE_1, "1 25635U 99008B   89331.44324332  .00000046 -95738-5 -18414-4 4 32058");
+        tle4.put(LINE_1, "1 25635U 99008B   89331.44324332  .00000046 -95738-5 -18414-4 4 32054");
         tle4.put(LINE_2, "2 25635  96.4728 278.0869 0139138 173.2587 187.0527 14.47945711936895");
         tle4.put(SATELLITE_NUMBER, "25635");
         tle4.put(CLASSIFICATION, "U");
@@ -157,7 +157,7 @@ public class TLEBuilderTest {
         tle4.put(DRAG, "-.000018414");
         tle4.put(EPHEMERIS_TYPE, "4");
         tle4.put(ELEMENT_SET_NUMBER, "3205");
-        tle4.put(CHECKSUM_1, "8");
+        tle4.put(CHECKSUM_1, "4");
         tle4.put(INCLINATION, "96.4728");
         tle4.put(RAAN, "278.0869");
         tle4.put(ECCENTRICITY, ".0139138");
@@ -189,7 +189,6 @@ public class TLEBuilderTest {
         double dragTerm;
         int    ephemerisType;
         int    elementSetNumber;
-        int    checksumLine1;
         double inclination;
         double raan;
         double eccentricity;
@@ -197,7 +196,6 @@ public class TLEBuilderTest {
         double meanAnomaly;
         double meanMotion;
         int    revolutions;
-        int    checksumLine2;
 
         for (Map<TLEElement, String> tle : TLEs) {
             title = tle.get(TITLE);
@@ -213,7 +211,6 @@ public class TLEBuilderTest {
             dragTerm = Double.parseDouble(tle.get(DRAG));
             ephemerisType = Integer.parseInt(tle.get(EPHEMERIS_TYPE));
             elementSetNumber = Integer.parseInt(tle.get(ELEMENT_SET_NUMBER));
-            checksumLine1 = Integer.parseInt(tle.get(CHECKSUM_1));
             inclination = Double.parseDouble(tle.get(INCLINATION));
             raan = Double.parseDouble(tle.get(RAAN));
             eccentricity = Double.parseDouble(tle.get(ECCENTRICITY));
@@ -221,7 +218,6 @@ public class TLEBuilderTest {
             meanAnomaly = Double.parseDouble(tle.get(MEAN_ANOMALY));
             meanMotion = Double.parseDouble(tle.get(MEAN_MOTION));
             revolutions = Integer.parseInt(tle.get(REVOLUTIONS));
-            checksumLine2 = Integer.parseInt(tle.get(CHECKSUM_2));
 
             TLE builtTle = TLEBuilder.newBuilder(title)
                     .setSatelliteNumber(satelliteNumber)
@@ -231,7 +227,6 @@ public class TLEBuilderTest {
                     .setFirstDerivativeMeanMotion(firstDerivativeMeanMotion)
                     .setElementSetNumber(elementSetNumber)
                     .setRevolutions(revolutions)
-                    .setChecksums(checksumLine1, checksumLine2)
                     .setClassification(classification)
                     .setEphemerisType(ephemerisType)
                     .setSecondDerivativeMeanMotion(secondDerivativeMeanMotion)
