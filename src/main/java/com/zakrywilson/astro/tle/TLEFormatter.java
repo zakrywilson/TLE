@@ -1,5 +1,6 @@
 package com.zakrywilson.astro.tle;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 /**
@@ -11,6 +12,11 @@ import java.text.DecimalFormat;
 final class TLEFormatter {
 
     /**
+     * Rounding scheme used throughout the this class.
+     */
+    private static final RoundingMode ROUNDING_SCHEME = RoundingMode.HALF_UP;
+
+    /**
      * Private constructor.
      * <p>
      * This class only contains static members. No instances of this class should be created.
@@ -19,15 +25,20 @@ final class TLEFormatter {
 
     /**
      * Returns line 1 of a TLE, formatted with the provided fields and a newly generated checksum.
+     * <p>
+     * All values provided are assumed to be valid with respect to the TLE spec for line 1.
      *
      * @param satelliteNumber the satellite number to be set
      * @param classification the classification character to be set. Must be one of the following:
      * <code>U</code>, <code>C</code>, or <code>S</code>.
      * @param internationalDesignator the international designator to be set
-     * @param epochYear the epoch year of the launch to be set. Must be in <code>YYYY</code> format.
+     * @param epochYear the 4-digit epoch year of the launch to be set. Must be in <code>YYYY</code>
+     * format.
      * @param epochDay the fractional Julian day of the launch to be set
-     * @param firstDerivativeOfMeanMotion the 1st derivative of the mean motion (divided by 2) to be set
-     * @param secondDerivativeOfMeanMotion the 2nd derivative of the mean motion (divided by 6) to be set
+     * @param firstDerivativeOfMeanMotion the 1st time derivative of the mean motion (divided by 2)
+     * to be set
+     * @param secondDerivativeOfMeanMotion the 2nd tiem derivative of the mean motion (divided by 6)
+     * to be set
      * @param dragTerm the BSTAR drag term to be set
      * @param ephemerisType the ephemeris type to be set
      * @param elementSetNumber the element set number to be set
@@ -38,7 +49,7 @@ final class TLEFormatter {
                               double firstDerivativeOfMeanMotion,
                               double secondDerivativeOfMeanMotion, double dragTerm,
                               int ephemerisType, int elementSetNumber) {
-        String line = String.format("1 %s%s %s %s %s %s %s %s %s",
+        String line = String.format("1 %s%s %s %s %s %s %s %s %s", // All elements except checksum
                              TLEFormatter.formatSatelliteNumber(satelliteNumber), classification,
                              TLEFormatter.formatInternationalDesignator(internationalDesignator),
                              TLEFormatter.formatEpoch(epochYear, epochDay),
@@ -51,6 +62,8 @@ final class TLEFormatter {
 
     /**
      * Returns line 2 of a TLE, formatted with the provided fields and a newly generated checksum.
+     * <p>
+     * All values provided are assumed to be valid with respect to the TLE spec for line 2.
      *
      * @param satelliteNumber the satellite number to be set
      * @param inclination the inclination (in degrees) to be set
@@ -65,7 +78,7 @@ final class TLEFormatter {
     static String formatLine2(int satelliteNumber, double inclination, double raan,
                               double eccentricity, double argumentOfPerigee, double meanAnomaly,
                               double meanMotion, int revolutions) {
-        String line =  String.format("2 %s %s %s %s %s %s %s%s",
+        String line =  String.format("2 %s %s %s %s %s %s %s%s", // All elements except checksum
                              TLEFormatter.formatSatelliteNumber(satelliteNumber),
                              TLEFormatter.formatInclination(inclination),
                              TLEFormatter.formatRaan(raan),
@@ -87,11 +100,13 @@ final class TLEFormatter {
 
     private static String formatEpoch(int year, double day) {
         DecimalFormat dayFormatter = new DecimalFormat("##0.00000000");
+        dayFormatter.setRoundingMode(ROUNDING_SCHEME);
         return String.format("%02d%12s", (year % 100), dayFormatter.format(day));
     }
 
     private static String formatMeanMotionFirstDerivative(double d) {
         DecimalFormat formatter = new DecimalFormat(" .00000000;-.00000000");
+        formatter.setRoundingMode(ROUNDING_SCHEME);
         return formatter.format(d);
     }
 
@@ -123,6 +138,7 @@ final class TLEFormatter {
 
     private static String formatEccentricity(double d) {
         DecimalFormat formatter = new DecimalFormat(".0000000");
+        formatter.setRoundingMode(ROUNDING_SCHEME);
         return formatter.format(d).replace(".", "");
     }
 
@@ -136,11 +152,12 @@ final class TLEFormatter {
 
     private static String formatMeanMotion(double d) {
         DecimalFormat formatter = new DecimalFormat("00.00######");
+        formatter.setRoundingMode(ROUNDING_SCHEME);
         String s = formatter.format(d);
         if (s.startsWith("0")) {
             s = s.replaceFirst("0", " ");
         }
-        return s;
+        return String.format("%-11s", s);
     }
 
     private static String formatRevolutions(int i) {
@@ -149,11 +166,13 @@ final class TLEFormatter {
 
     private static String formatStandardDouble(double d) {
         DecimalFormat formatter = new DecimalFormat("##0.0000");
+        formatter.setRoundingMode(ROUNDING_SCHEME);
         return String.format("%8s", formatter.format(d));
     }
 
     private static String formatExponentialValue(double d) {
         DecimalFormat formatter = new DecimalFormat(" .00000E0;-.00000E0");
+        formatter.setRoundingMode(ROUNDING_SCHEME);
         return formatter.format(d).replace(".", "").replace("E", "");
     }
 

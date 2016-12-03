@@ -1,8 +1,6 @@
 # TLE
 
-
 A package for parsing, formatting, and building TLEs [(Two Line Element Sets)](https://en.wikipedia.org/wiki/Two-line_element_set).
-
 
 ## Version 1.1.1 - 12/03/2016
 
@@ -17,6 +15,11 @@ Enhanced TLEBuilder
 
 - Changing around steps for more intuitive TLE construction (e.g., mean motion has been taken out of orbital elements step)  
 - Making TLEBuilder class more robust by adding more input parameter range checks (and throwing IllegalArgumentExceptions in such cases)  
+
+Bug fixs in TLEFormatter
+
+- Fixed issue where mean motion formatted strings could be shorter than needed  
+- Now rounding *half up* for values exceeding precision when formatting  
 
 ## Getting Started
 
