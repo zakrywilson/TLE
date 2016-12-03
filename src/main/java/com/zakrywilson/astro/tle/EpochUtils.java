@@ -5,11 +5,12 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A thread-safe epoch utility class for handling conversions between the TLE epoch (year +
  * fractional Julian day) and the millisecond epoch from January 1, 1970 00:00:00. It also provides
- * functionality for formatting a millisecond epoch to the TLE format <tt>yyddd.dddddddd</tt>.
+ * functionality for formatting a millisecond epoch to the TLE format <code>yyddd.dddddddd</code>.
  *
  * @author Zach Wilson
  */
@@ -28,10 +29,11 @@ final class EpochUtils {
     /**
      * Decimal formatter used to format the decimal values of the Julian epoch day.
      */
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat(".00000000");
+    private static final AtomicReference<DecimalFormat> DECIMAL_FORMAT_ATOMIC_REFERENCE
+            = new AtomicReference<>(new DecimalFormat(".00000000"));
 
     static {
-        DECIMAL_FORMAT.setRoundingMode(RoundingMode.HALF_UP);
+        DECIMAL_FORMAT_ATOMIC_REFERENCE.get().setRoundingMode(RoundingMode.HALF_UP);
     }
 
     /**
@@ -47,7 +49,7 @@ final class EpochUtils {
      * @param julianDay the fractional Julian day to be converted
      * @return the millisecond epoch
      */
-    static synchronized long toMillisecondEpoch(int year, double julianDay) {
+    static long toMillisecondEpoch(int year, double julianDay) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.setTimeZone(UTC_TIME_ZONE);
@@ -74,7 +76,7 @@ final class EpochUtils {
      * @param epochMillisecond the epoch millisecond to be formatted
      * @return the formatted epoch
      */
-    static synchronized String formatForTLE(long epochMillisecond) {
+    static String formatForTLE(long epochMillisecond) {
         // Get the year and day
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
@@ -96,7 +98,8 @@ final class EpochUtils {
         double fractionalDay = remainingMilliseconds / MILLIS_IN_A_DAY;
 
         // Format year and day for TLE epoch field
-        return String.format("%02d%3d%-8s", twoDigitYear, dayOfYear, DECIMAL_FORMAT.format(fractionalDay));
+        String decimal = DECIMAL_FORMAT_ATOMIC_REFERENCE.get().format(fractionalDay);
+        return String.format("%02d%3d%-8s", twoDigitYear, dayOfYear, decimal);
     }
 
     /**
@@ -105,7 +108,7 @@ final class EpochUtils {
      * @param epochMillisecond the number of milliseconds since January 1, 1970 00:00:00
      * @return the year
      */
-    static synchronized int getEpochYear(long epochMillisecond) {
+    static int getEpochYear(long epochMillisecond) {
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.setTimeZone(UTC_TIME_ZONE);
@@ -119,7 +122,7 @@ final class EpochUtils {
      * @param epochMillisecond the number of milliseconds since January 1, 1970 00:00:00
      * @return the fractional Julian day
      */
-    static synchronized double getEpochJulianDay(long epochMillisecond) {
+    static double getEpochJulianDay(long epochMillisecond) {
         // Get the year and day
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
