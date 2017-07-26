@@ -1,0 +1,15 @@
+package com.zakrywilson.astro.tle;
+
+/**
+ * Used to easily access elements in {@link TLEParserTest#TLEs}.
+ *
+ * @author Zach Wilson
+ */
+public enum TLEElement {
+
+    TITLE, LINE_1, LINE_2, SATELLITE_NUMBER, CLASSIFICATION, INTERNATIONAL_DESIGNATOR,
+    EPOCH_YEAR, EPOCH_DAY, FIRST_DER, SECOND_DER, DRAG, EPHEMERIS_TYPE, ELEMENT_SET_NUMBER,
+    CHECKSUM_1, INCLINATION, RAAN, ECCENTRICITY, ARGUMENT_OF_PERIGEE, MEAN_ANOMALY, MEAN_MOTION,
+    REVOLUTIONS, CHECKSUM_2
+
+}
