@@ -323,13 +323,22 @@ final class TLEParser {
      */
     private double parseExponentialValue(String s) {
         // If a '+' sign is in the string, this means it is 0.0 for the drag term
-        // Also, ' 00000-0' is very common; if that is found, return 0.0
-        if (s.trim().equals("00000+0") || s.trim().equals("00000-0")) {
+        // Also, '00000-0' is very common; if that is found, return 0.0
+        String trimmed = s.trim();
+        if (trimmed.trim().matches("([+-])?0+([+-]0)?")) {
             return 0.0;
         }
 
-        // Find the last '-', ignoring the possible preceding negative sign
+        // If the value has no exponent, then just parse it
+        if (trimmed.endsWith("-0") || trimmed.endsWith("+0")) {
+            return Double.parseDouble(trimmed.substring(0, trimmed.length() - 2));
+        }
+
+        // Find the last '-' or '+', ignoring the possible preceding negative sign
         int index = s.lastIndexOf('-');
+        if (index < 0) {
+            throw new IllegalStateException("Exponential value not recognized: " + s);
+        }
 
         // Find the exponent for performing 10^n
         int exponent = Integer.parseInt(s.substring(index + 1).trim());
