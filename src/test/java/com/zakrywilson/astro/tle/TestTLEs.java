@@ -193,6 +193,31 @@ class TestTLEs {
         tle6.put(REVOLUTIONS, "63246");
         tle6.put(CHECKSUM_2, "6");
         TLEs.add(tle6);
+
+        Map<TLEElement, String> tle7 = new EnumMap<>(TLEElement.class);
+        tle7.put(TITLE, "0 THOR BURNER 2 R/B");
+        tle7.put(LINE_1, "1  2422U 66082B   17206.57008655 +.00000009 +00000-0 +15198-4 0  9991");
+        tle7.put(LINE_2, "2  2422 098.3008 073.7023 0115120 021.2217 339.3693 14.44053355646205");
+        tle7.put(SATELLITE_NUMBER, "2422");
+        tle7.put(CLASSIFICATION, "U");
+        tle7.put(INTERNATIONAL_DESIGNATOR, "66082B");
+        tle7.put(EPOCH_YEAR, "2017");
+        tle7.put(EPOCH_DAY, "206.57008655");
+        tle7.put(FIRST_DER, ".00000009");
+        tle7.put(SECOND_DER, "0");
+        tle7.put(DRAG, ".000015198");
+        tle7.put(EPHEMERIS_TYPE, "0");
+        tle7.put(ELEMENT_SET_NUMBER, "999");
+        tle7.put(CHECKSUM_1, "1");
+        tle7.put(INCLINATION, "098.3008");
+        tle7.put(RAAN, "073.7023");
+        tle7.put(ECCENTRICITY, ".0115120");
+        tle7.put(ARGUMENT_OF_PERIGEE, "021.2217");
+        tle7.put(MEAN_ANOMALY, "339.3693");
+        tle7.put(MEAN_MOTION, "14.44053355");
+        tle7.put(REVOLUTIONS, "64620");
+        tle7.put(CHECKSUM_2, "5");
+        TLEs.add(tle7);
     }
 
     static List<Map<TLEElement, String>> getTles() {
