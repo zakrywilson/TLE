@@ -6,7 +6,7 @@
 
   <groupId>com.zakrywilson.astro.tle</groupId>
   <artifactId>tle</artifactId>
-  <version>1.0</version>
+  <version>1.1.2</version>
   <name>TLE</name>
   <description>A package for parsing, formatting, and building TLEs</description>
   <url>https://github.com/zakrywilson/TLE</url>

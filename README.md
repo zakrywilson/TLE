@@ -2,24 +2,11 @@
 
 A package for parsing, formatting, and building TLEs [(Two Line Element Sets)](https://en.wikipedia.org/wiki/Two-line_element_set).
 
-## Version 1.1.1 - 12/03/2016
+## Version 1.1.2 - 7/25/2017
 
 [Full Change Log](https://github.com/zakrywilson/TLE/blob/master/CHANGELOG.md)
 
-Improved efficiency of EpochUtils class
-
-- No longer using *synchronized* methods but instead using a single atomic reference to the shared resource  
-- Cutting down on java.util.Calendar instances  
-
-Enhanced TLEBuilder
-
-- Changing around steps for more intuitive TLE construction (e.g., mean motion has been taken out of orbital elements step)  
-- Making TLEBuilder class more robust by adding more input parameter range checks (and throwing IllegalArgumentExceptions in such cases)  
-
-Bug fixs in TLEFormatter
-
-- Fixed issue where mean motion formatted strings could be shorter than needed  
-- Now rounding *half up* for values exceeding precision when formatting  
+Fixed issue where strange exponential formats with trailing '+' signs were causing parsing exceptions  
 
 ## Getting Started
 

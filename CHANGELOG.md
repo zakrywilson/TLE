@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.1.2 - 7/25/2017
+
+Fixed issue where strange exponential formats with trailing '+' signs were causing parsing exceptions  
+
 ## Version 1.1.1 - 12/03/2016
 
 Improved efficiency of EpochUtils class
@@ -12,7 +16,7 @@ Enhanced TLEBuilder
 - Changing around steps for more intuitive TLE construction (e.g., mean motion has been taken out of orbital elements step)  
 - Making TLEBuilder class more robust by adding more input parameter range checks (and throwing IllegalArgumentExceptions in such cases)  
 
-Bug fixs in TLEFormatter
+Bug fixes in TLEFormatter
 
 - Fixed issue where mean motion formatted strings could be shorter than needed  
 - Now rounding *half up* for values exceeding precision when formatting  
