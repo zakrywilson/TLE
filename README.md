@@ -180,7 +180,7 @@ If you're using the command line, issue the `mvn test` command at the project's 
 
 **Zach Wilson**  
 Email: zakrywilson@gmail.com  
-Website: [zakrywilson.com](www.zakrywilson.com)
+Website: [zakrywilson.com](http://zakrywilson.com/)
 
 ## License
 
