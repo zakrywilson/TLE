@@ -97,10 +97,10 @@ The list of steps in order (after calling `TLEBuilder#newBuilder()` or `TLEBuild
 7. **Mean motion (revolutions per day) step**  
 8. **First time derivative of mean motion step**  
 9. **Build step**   
-    a. **Second time derivative of mean motion** (*optional, default = 0.0*)  
-    b. **BSTAR drag term** (*optional, default = 0.0*)  
-    c. **Classification** (*optional, default = 'U'*)  
-    d. **Ephemeris type** (*optional, default = 0*)  
+    a. **Second time derivative of mean motion** (*optional, default =* `0.0`)  
+    b. **BSTAR drag term** (*optional, default =* `0.0`)  
+    c. **Classification** (*optional, default =* `U`)  
+    d. **Ephemeris type** (*optional, default =* `0`)  
     e. **Build TLE**
 
 As you can see, after the *checksums* step, the TLE can now be built or any number of the optional elements can be set before calling `BuildStep#build()`.
@@ -180,7 +180,7 @@ If you're using the command line, issue the `mvn test` command at the project's 
 
 **Zach Wilson**  
 Email: zakrywilson@gmail.com  
-URL: zakrywilson.com  
+Website: [zakrywilson.com](www.zakrywilson.com)
 
 ## License
 
